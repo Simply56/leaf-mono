@@ -53,7 +53,7 @@ The "days since watered" display is two chained pipes: `computeWateredDaysAgo` (
 
 ## PWA / deployment
 
-`InstallService` listens for the Chromium-only `beforeinstallprompt` event, and the root `App` template shows an install banner while one is pending and the user has not dismissed it (`localStorage['installDismissed']`). Browsers that never fire the event (Safari, Firefox) simply show no banner.
+`InstallService` listens for the Chromium-only `beforeinstallprompt` event, and the root `App` template shows an install banner while one is pending and the user has not dismissed it (`localStorage['installDismissed']`). iOS never fires the event in any browser, so there the same banner shows the manual steps instead (Share → "Add to Home Screen") unless the app is already running standalone. Other browsers that never fire it (desktop Safari, Firefox) simply show no banner.
 
 The service worker (`ngsw-config.json`) is enabled only in production builds (`!isDevMode()`), so caching behavior cannot be reproduced under `npm start`. The app is served from the `/leaf_ng/` sub-path on GitHub Pages, so asset and manifest paths must stay relative (no leading `/`).
 

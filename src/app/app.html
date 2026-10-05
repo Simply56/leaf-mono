@@ -31,11 +31,25 @@
         </button>
     </div>
 }
-@if (installer.canInstall()) {
+@if (installer.canInstall() || installer.showManualSteps()) {
     <div class="install-banner">
-        <span>Install Leaf for quick access from your home screen.</span>
+        @if (installer.canInstall()) {
+            <span>Install Leaf for quick access from your home screen.</span>
+        } @else {
+            <span>
+                Install Leaf: tap Share
+                <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                        d="M12 3v12M8 7l4-4 4 4M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"
+                    />
+                </svg>
+                then “Add to Home Screen”.
+            </span>
+        }
         <div class="install-actions">
-            <button (click)="installer.install()">Install</button>
+            @if (installer.canInstall()) {
+                <button (click)="installer.install()">Install</button>
+            }
             <button
                 class="install-dismiss"
                 (click)="installer.dismiss()"
