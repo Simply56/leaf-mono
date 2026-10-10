@@ -12,7 +12,7 @@ import { PlantsModule } from "./plants/plants.module";
         ConfigModule.forRoot({ isGlobal: true }),
         TypeOrmModule.forRoot({
             type: "sqlite",
-            database: "plants.db",
+            database: process.env.DATABASE_PATH ?? "plants.db",
             entities: [Plant],
             synchronize: true, //TODO: Be careful with this in production
         }),

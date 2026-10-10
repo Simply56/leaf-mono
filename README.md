@@ -128,6 +128,18 @@ npm run start:dev
 npm run start:prod
 ```
 
+## Running with Docker
+
+```bash
+cp .env.example .env   # then set LEAF_API_KEY
+
+docker compose up -d           # (re)build and start on http://localhost:3000
+docker compose logs -f         # follow logs
+docker compose down            # stop
+```
+
+The database and uploaded images are kept in the `db` and `uploads` named volumes, so they survive rebuilds. `docker compose down -v` deletes them.
+
 ## API Endpoints
 
 ### Plants
