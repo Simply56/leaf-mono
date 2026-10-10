@@ -179,35 +179,33 @@ describe("/plants", () => {
             expect(next.id).toBe(last.id + 1);
         });
 
-        it.each([
-            "get",
-            "patch",
-            "delete",
-        ] as const)("responds 404 to %s for an id that does not exist", async (method) => {
-            const res = await ctx
-                .request()
-                [method](`/plants/${MISSING_ID}`)
-                .query(auth)
-                .send({});
+        it.each(["get", "patch", "delete"] as const)(
+            "responds 404 to %s for an id that does not exist",
+            async (method) => {
+                const res = await ctx
+                    .request()
+                    [method](`/plants/${MISSING_ID}`)
+                    .query(auth)
+                    .send({});
 
-            expect(res.status).toBe(404);
-            expect(res.body.statusCode).toBe(404);
-        });
+                expect(res.status).toBe(404);
+                expect(res.body.statusCode).toBe(404);
+            },
+        );
 
-        it.each([
-            "get",
-            "patch",
-            "delete",
-        ] as const)("responds 400 to %s for a non-numeric id", async (method) => {
-            const res = await ctx
-                .request()
-                [method]("/plants/abc")
-                .query(auth)
-                .send({});
+        it.each(["get", "patch", "delete"] as const)(
+            "responds 400 to %s for a non-numeric id",
+            async (method) => {
+                const res = await ctx
+                    .request()
+                    [method]("/plants/abc")
+                    .query(auth)
+                    .send({});
 
-            expect(res.status).toBe(400);
-            expect(res.body.statusCode).toBe(400);
-        });
+                expect(res.status).toBe(400);
+                expect(res.body.statusCode).toBe(400);
+            },
+        );
     });
 
     describe("validation", () => {
@@ -234,21 +232,22 @@ describe("/plants", () => {
             expect(await listPlants()).toEqual(before);
         });
 
-        it.each(
-            invalidBodies,
-        )("rejects PATCH with %s", async (_label, body) => {
-            const created = await createPlant({ name: "Untouched" });
+        it.each(invalidBodies)(
+            "rejects PATCH with %s",
+            async (_label, body) => {
+                const created = await createPlant({ name: "Untouched" });
 
-            const res = await ctx
-                .request()
-                .patch(`/plants/${created.id}`)
-                .query(auth)
-                .send(body);
+                const res = await ctx
+                    .request()
+                    .patch(`/plants/${created.id}`)
+                    .query(auth)
+                    .send(body);
 
-            expect(res.status).toBe(400);
-            expect(res.body.statusCode).toBe(400);
-            expect(await getPlant(created.id)).toEqual(created);
-        });
+                expect(res.status).toBe(400);
+                expect(res.body.statusCode).toBe(400);
+                expect(await getPlant(created.id)).toEqual(created);
+            },
+        );
 
         it("does not let a client change the id", async () => {
             const created = await createPlant({ name: "Fixed id" });

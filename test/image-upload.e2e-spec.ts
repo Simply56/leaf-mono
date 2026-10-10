@@ -137,20 +137,19 @@ describe("POST /plants/:id/image", () => {
         ).toBe(true);
     });
 
-    it.each([
-        ".jpg",
-        ".jpeg",
-        ".gif",
-    ])("accepts a %s file and keeps its extension", async (extension) => {
-        const id = await createPlant("Other format");
+    it.each([".jpg", ".jpeg", ".gif"])(
+        "accepts a %s file and keeps its extension",
+        async (extension) => {
+            const id = await createPlant("Other format");
 
-        const { res } = await upload(id, `photo${extension}`);
+            const { res } = await upload(id, `photo${extension}`);
 
-        expect(res.status).toBe(201);
-        expect(res.body.imagePath).toMatch(
-            new RegExp(`^/static/plant_${id}_\\d+\\${extension}$`),
-        );
-    });
+            expect(res.status).toBe(201);
+            expect(res.body.imagePath).toMatch(
+                new RegExp(`^/static/plant_${id}_\\d+\\${extension}$`),
+            );
+        },
+    );
 
     it("responds 400 to a file with another extension", async () => {
         const id = await createPlant("Picky");

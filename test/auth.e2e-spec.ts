@@ -40,11 +40,14 @@ describe("API key guard", () => {
         ["patch", "/plants/1"],
         ["delete", "/plants/1"],
         ["post", "/plants/1/image"],
-    ] as const)("%s %s responds 401 without an API key", async (method, url) => {
-        const res = await ctx.request()[method](url);
+    ] as const)(
+        "%s %s responds 401 without an API key",
+        async (method, url) => {
+            const res = await ctx.request()[method](url);
 
-        expect(res.status).toBe(401);
-    });
+            expect(res.status).toBe(401);
+        },
+    );
 
     it("created nothing through the rejected requests", async () => {
         const res = await ctx.request().get("/plants").query(auth);

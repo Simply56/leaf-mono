@@ -55,26 +55,25 @@ describe("lastWatered", () => {
             iso: "2026-10-03T00:00:00.000Z",
             stored: "2026-10-03 00:00:00.000",
         },
-    ])("POST with $label stores UTC text and reads back as ISO", async ({
-        sent,
-        iso,
-        stored,
-    }) => {
-        const res = await ctx
-            .request()
-            .post("/plants")
-            .query(auth)
-            .send({ name: "Dated", lastWatered: sent });
+    ])(
+        "POST with $label stores UTC text and reads back as ISO",
+        async ({ sent, iso, stored }) => {
+            const res = await ctx
+                .request()
+                .post("/plants")
+                .query(auth)
+                .send({ name: "Dated", lastWatered: sent });
 
-        expect(res.status).toBe(201);
-        expectIsoInstant(res.body.lastWatered, iso);
-        expect(await getLastWatered(res.body.id)).toBe(iso);
+            expect(res.status).toBe(201);
+            expectIsoInstant(res.body.lastWatered, iso);
+            expect(await getLastWatered(res.body.id)).toBe(iso);
 
-        const row = readPlantRow(DATABASE_PATH, res.body.id);
-        expect(row.lastWateredType).toBe("text");
-        expect(row.lastWatered).toMatch(STORED_DATE_FORMAT);
-        expect(row.lastWatered).toBe(stored);
-    });
+            const row = readPlantRow(DATABASE_PATH, res.body.id);
+            expect(row.lastWateredType).toBe("text");
+            expect(row.lastWatered).toMatch(STORED_DATE_FORMAT);
+            expect(row.lastWatered).toBe(stored);
+        },
+    );
 
     it("PATCH stores UTC text and reads back as ISO", async () => {
         const created = await ctx
