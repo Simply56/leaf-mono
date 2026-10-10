@@ -249,6 +249,63 @@ describe("/plants", () => {
             },
         );
 
+        // `name` and `imagePath` are NOT NULL columns. A body that leaves the
+        // database nothing valid to store must be refused as a client error
+        // instead of surfacing the constraint failure as a 500.
+        it.each([
+            ["no name", {}],
+            ["a null name", { name: null }],
+            ["a null imagePath", { name: "Fern", imagePath: null }],
+        ] as [string, Record<string, unknown>][])(
+            "rejects POST with %s",
+            async (_label, body) => {
+                const before = await listPlants();
+
+                const res = await ctx
+                    .request()
+                    .post("/plants")
+                    .query(auth)
+                    .send(body);
+
+                expect(res.status).toBe(400);
+                expect(res.body.statusCode).toBe(400);
+                expect(await listPlants()).toEqual(before);
+            },
+        );
+
+        it.each([
+            ["a null name", { name: null }],
+            ["a null imagePath", { imagePath: null }],
+        ] as [string, Record<string, unknown>][])(
+            "rejects PATCH with %s",
+            async (_label, body) => {
+                const created = await createPlant({ name: "Untouched" });
+
+                const res = await ctx
+                    .request()
+                    .patch(`/plants/${created.id}`)
+                    .query(auth)
+                    .send(body);
+
+                expect(res.status).toBe(400);
+                expect(res.body.statusCode).toBe(400);
+                expect(await getPlant(created.id)).toEqual(created);
+            },
+        );
+
+        it("accepts PATCH with an empty body and changes nothing", async () => {
+            const created = await createPlant({ name: "Left alone" });
+
+            const res = await ctx
+                .request()
+                .patch(`/plants/${created.id}`)
+                .query(auth)
+                .send({});
+
+            expect(res.status).toBe(200);
+            expect(await getPlant(created.id)).toEqual(created);
+        });
+
         it("does not let a client change the id", async () => {
             const created = await createPlant({ name: "Fixed id" });
 

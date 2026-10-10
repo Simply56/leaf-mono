@@ -15,7 +15,11 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { ApiKeyGuard } from "../auth/api-key.guard";
-import { PlantDto, UploadImageDto } from "./dto/plant.dto";
+import {
+    CreatePlantDto,
+    UpdatePlantDto,
+    UploadImageDto,
+} from "./dto/plant.dto";
 import type { Plant } from "./entities/plant.entity";
 import { PlantsService } from "./plants.service";
 
@@ -26,7 +30,7 @@ export class PlantsController {
     constructor(private readonly plantsService: PlantsService) {}
 
     @Post()
-    create(@Body() createPlantDto: PlantDto): Promise<Plant> {
+    create(@Body() createPlantDto: CreatePlantDto): Promise<Plant> {
         return this.plantsService.create(createPlantDto);
     }
 
@@ -43,7 +47,7 @@ export class PlantsController {
     @Patch(":id")
     update(
         @Param("id", ParseIntPipe) id: number,
-        @Body() updatePlantDto: PlantDto,
+        @Body() updatePlantDto: UpdatePlantDto,
     ): Promise<Plant> {
         return this.plantsService.update(id, updatePlantDto);
     }

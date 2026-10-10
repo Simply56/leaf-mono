@@ -120,7 +120,7 @@ A plant looks like this:
 }
 ```
 
-- `name`: string.
+- `name`: string. Required when creating a plant.
 - `lastWatered`: ISO 8601 date. To record a watering, `PATCH` the plant with the new date.
 - `imagePath`: string. Normally set by the image upload, not by hand.
 

@@ -1,23 +1,28 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsDateString, IsOptional, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
+import {
+    IsDateString,
+    IsOptional,
+    IsString,
+    ValidateIf,
+} from "class-validator";
 import type { Express } from "express";
 
-export class PlantDto {
-    @ApiPropertyOptional({
+export class CreatePlantDto {
+    @ApiProperty({
         description: "Human-friendly name of the plant",
         example: "Snake Plant",
         maxLength: 255,
     })
-    @IsOptional()
     @IsString()
-    name?: string;
+    name: string;
 
+    // May be left out, but not null: the column is NOT NULL with a default.
     @ApiPropertyOptional({
         description: "Path or URL to the plant image",
         example: "/static/plant_1_1712345678.png",
         maxLength: 500,
     })
-    @IsOptional()
+    @ValidateIf((_, value) => value !== undefined)
     @IsString()
     imagePath?: string;
 
@@ -30,6 +35,12 @@ export class PlantDto {
     @IsDateString()
     lastWatered?: string;
 }
+
+// Every field may be left out. `skipNullProperties: false` keeps null from
+// bypassing validation, so only `lastWatered` (nullable above) accepts it.
+export class UpdatePlantDto extends PartialType(CreatePlantDto, {
+    skipNullProperties: false,
+}) {}
 
 export class UploadImageDto {
     @ApiProperty({

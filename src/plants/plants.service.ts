@@ -5,7 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import tinify from "tinify";
 import type { Repository } from "typeorm";
-import type { PlantDto } from "./dto/plant.dto";
+import type { CreatePlantDto, UpdatePlantDto } from "./dto/plant.dto";
 import { DEFAULT_PLANT_IMAGE_PATH, Plant } from "./entities/plant.entity";
 
 @Injectable()
@@ -18,7 +18,7 @@ export class PlantsService {
         tinify.key = config.getOrThrow<string>("TINIFY_API_KEY");
     }
 
-    async create(createPlantDto: PlantDto): Promise<Plant> {
+    async create(createPlantDto: CreatePlantDto): Promise<Plant> {
         const plant = this.plantRepository.create(createPlantDto);
         return await this.plantRepository.save(plant);
     }
@@ -35,7 +35,7 @@ export class PlantsService {
         return plant;
     }
 
-    async update(id: number, updatePlantDto: PlantDto): Promise<Plant> {
+    async update(id: number, updatePlantDto: UpdatePlantDto): Promise<Plant> {
         const plant = await this.findOne(id);
         Object.assign(plant, updatePlantDto);
         return await this.plantRepository.save(plant);
