@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import tinify from "tinify";
 import type { Repository } from "typeorm";
@@ -12,8 +13,9 @@ export class PlantsService {
     constructor(
         @InjectRepository(Plant)
         private readonly plantRepository: Repository<Plant>,
+        config: ConfigService,
     ) {
-        tinify.key = "PJKGghx7hhZpt5TCyGXDNCKgNTKd2yMK";
+        tinify.key = config.getOrThrow<string>("TINIFY_API_KEY");
     }
 
     async create(createPlantDto: PlantDto): Promise<Plant> {
