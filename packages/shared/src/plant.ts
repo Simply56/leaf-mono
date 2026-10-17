@@ -31,7 +31,10 @@ export const PlantListSchema = z.array(PlantSchema);
 
 export type Plant = z.infer<typeof PlantSchema>;
 
+// The column is varchar(255). Only requests are limited: names stored before
+// the limit existed may be longer, and the web app must still accept them.
 const name = z.string().check(
+    z.maxLength(255),
     z.meta({
         description: "Human-friendly name of the plant",
         example: "Snake Plant",

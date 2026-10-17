@@ -216,6 +216,8 @@ describe("/plants", () => {
                 { name: "Fern", lastWatered: "yesterday" },
             ],
             ["a non-string name", { name: 42 }],
+            // The column is varchar(255), which SQLite does not enforce.
+            ["a name over 255 characters", { name: "x".repeat(256) }],
             // Only the upload endpoint sets it. The path is also what gets
             // deleted when the image is replaced or the plant removed.
             [
@@ -298,6 +300,21 @@ describe("/plants", () => {
                 expect(await getPlant(created.id)).toEqual(created);
             },
         );
+
+        it("accepts a name of exactly 255 characters", async () => {
+            const name = "x".repeat(255);
+            const created = await createPlant({ name });
+
+            const res = await ctx
+                .request()
+                .patch(`/plants/${created.id}`)
+                .query(auth)
+                .send({ name: "y".repeat(255) });
+
+            expect(created.name).toBe(name);
+            expect(res.status).toBe(200);
+            expect(res.body.name).toBe("y".repeat(255));
+        });
 
         it("accepts PATCH with an empty body and changes nothing", async () => {
             const created = await createPlant({ name: "Left alone" });

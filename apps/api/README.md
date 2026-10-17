@@ -128,7 +128,7 @@ A plant looks like this:
 }
 ```
 
-- `name`: string. Required when creating a plant.
+- `name`: string of at most 255 characters. Required when creating a plant.
 - `lastWatered`: ISO 8601 date (`2026-10-03`) or date-time (`2026-10-03T08:30:00Z`, `2026-10-03T10:30:00+02:00`), or `null` to clear it. To record a watering, `PATCH` the plant with the new date. Responses always give it as a UTC timestamp (`2026-10-03T08:30:00.000Z`), or `null`.
 - `imagePath` cannot be sent; only the image upload sets it.
 
