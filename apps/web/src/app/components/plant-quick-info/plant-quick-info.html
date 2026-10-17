@@ -3,7 +3,8 @@
     <h3>{{ plant.name }}</h3>
     @if (plant.lastWatered != null) {
         <p>
-            Days since last watering: <span
+            Days since last watering:
+            <span
                 [style.color]="
                     plant.lastWatered | computeWateredDaysAgo | valueToColor
                 "

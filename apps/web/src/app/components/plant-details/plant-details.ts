@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe } from "@angular/common";
 import {
     Component,
     computed,
@@ -7,17 +7,17 @@ import {
     inject,
     Signal,
     ViewChild,
-} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import Plant from '../../models/plantInfo.model';
-import { ComputeWateredDaysAgoPipe } from '../../pipes/compute-watered-days-ago-pipe';
-import { ValueToColorPipe } from '../../pipes/value-to-color-pipe';
-import { PlantsService } from '../../services/plants-service';
-import { PlantImage } from '../plant-image/plant-image';
+} from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import Plant from "../../models/plantInfo.model";
+import { ComputeWateredDaysAgoPipe } from "../../pipes/compute-watered-days-ago-pipe";
+import { ValueToColorPipe } from "../../pipes/value-to-color-pipe";
+import { PlantsService } from "../../services/plants-service";
+import { PlantImage } from "../plant-image/plant-image";
 
 @Component({
-    selector: 'app-plant-details',
+    selector: "app-plant-details",
     imports: [
         ComputeWateredDaysAgoPipe,
         ValueToColorPipe,
@@ -26,37 +26,37 @@ import { PlantImage } from '../plant-image/plant-image';
         PlantImage,
         FormsModule,
     ],
-    templateUrl: './plant-details.html',
+    templateUrl: "./plant-details.html",
 })
 export class PlantDetails {
     fullUrl = window.location.href;
     router: Router = inject(Router);
     service: PlantsService = inject(PlantsService);
     route: ActivatedRoute = inject(ActivatedRoute);
-    id = Number(this.route.snapshot.paramMap.get('id'));
-    plant: Signal<Plant> = computed(
-        () => this.service.plants().find((p) => p.id == this.id)!,
+    id = Number(this.route.snapshot.paramMap.get("id"));
+    plant: Signal<Plant> = computed(() =>
+        this.service.plants().find((p) => p.id == this.id)!,
     );
     selectedDate: string;
-    @ViewChild('plantNameHeading')
+    @ViewChild("plantNameHeading")
     plantNameHeading!: ElementRef<HTMLHeadingElement>;
     constructor() {
         effect(() => {
             if (!this.service.loading() && this.plant() == undefined) {
-                this.router.navigate(['']);
+                this.router.navigate([""]);
             }
         });
         const today = new Date();
-        this.selectedDate = today.toISOString().split('T')[0];
+        this.selectedDate = today.toISOString().split("T")[0];
     }
 
     deletePlant() {
         if (
             this.plant() != null &&
-            confirm('Are you sure you want to delete this plant?')
+            confirm("Are you sure you want to delete this plant?")
         ) {
             this.service.deletePlant(this.id);
-            this.router.navigate(['']);
+            this.router.navigate([""]);
         }
     }
 
@@ -68,17 +68,17 @@ export class PlantDetails {
     }
 
     renamePlant(event: KeyboardEvent) {
-        if (event.key !== 'Enter') {
+        if (event.key !== "Enter") {
             return;
         }
         event.preventDefault();
 
         if (this.plantNameHeading.nativeElement.textContent == null) {
-            console.log('plantNameHeading is null');
+            console.log("plantNameHeading is null");
             return;
         }
         if (this.plant == undefined) {
-            console.log('Plant is undefined');
+            console.log("Plant is undefined");
             return;
         }
 

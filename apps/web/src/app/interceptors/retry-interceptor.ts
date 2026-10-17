@@ -1,9 +1,9 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { retry, timer } from 'rxjs';
+import { HttpInterceptorFn } from "@angular/common/http";
+import { retry, timer } from "rxjs";
 
 // Reads are safe to repeat, so GETs are retried; mutations fail on the first error
 export const retryInterceptor: HttpInterceptorFn = (req, next) => {
-    if (req.method !== 'GET') return next(req);
+    if (req.method !== "GET") return next(req);
 
     return next(req).pipe(
         retry({

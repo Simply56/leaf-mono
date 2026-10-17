@@ -4,15 +4,15 @@ import {
     Injectable,
     linkedSignal,
     signal,
-} from '@angular/core';
-import Plant from '../models/plantInfo.model';
-import { HttpClient, httpResource } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../environments/environments';
-import { AuthService } from './auth-service';
+} from "@angular/core";
+import Plant from "../models/plantInfo.model";
+import { HttpClient, httpResource } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "../environments/environments";
+import { AuthService } from "./auth-service";
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: "root",
 })
 export class PlantsService {
     private http = inject(HttpClient);
@@ -21,7 +21,7 @@ export class PlantsService {
 
     // No request is made until the API key is known; retries live in retryInterceptor
     private plantsResource = httpResource<Plant[]>(
-        () => (this.keyResolved() ? this.buildUrl('/plants') : undefined),
+        () => (this.keyResolved() ? this.buildUrl("/plants") : undefined),
         {
             parse: (raw) =>
                 (raw as Plant[]).map((p) => {
@@ -51,8 +51,8 @@ export class PlantsService {
     error = linkedSignal<string, string | null>({
         source: this.plantsResource.status,
         computation: (status) =>
-            status === 'error'
-                ? 'Could not load plants. Check your connection and reload the page.'
+            status === "error"
+                ? "Could not load plants. Check your connection and reload the page."
                 : null,
     });
 
@@ -70,10 +70,10 @@ export class PlantsService {
     }
 
     addPlant(name: string) {
-        if (name === '') return;
+        if (name === "") return;
         this.mutate(
-            this.http.post(this.buildUrl('/plants'), { name: name }),
-            'Could not add the plant.',
+            this.http.post(this.buildUrl("/plants"), { name: name }),
+            "Could not add the plant.",
         );
     }
 
@@ -82,7 +82,7 @@ export class PlantsService {
             this.http.patch(this.buildUrl(`/plants/${plantId}`), {
                 name: newName,
             }),
-            'Could not rename the plant.',
+            "Could not rename the plant.",
         );
     }
 
@@ -91,26 +91,26 @@ export class PlantsService {
             this.http.patch(this.buildUrl(`/plants/${plantId}`), {
                 lastWatered: ISODate,
             }),
-            'Could not log the watering.',
+            "Could not log the watering.",
         );
     }
 
     deletePlant(plantId: number) {
         this.mutate(
             this.http.delete(this.buildUrl(`/plants/${plantId}`)),
-            'Could not delete the plant.',
+            "Could not delete the plant.",
         );
     }
 
     updatePlantImage(plantId: number, image: File) {
         const formData = new FormData();
-        formData.append('image', image);
+        formData.append("image", image);
         this.mutate(
             this.http.post<Plant>(
                 this.buildUrl(`/plants/${plantId}/image`),
                 formData,
             ),
-            'Could not upload the image.',
+            "Could not upload the image.",
         );
     }
 

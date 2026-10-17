@@ -1,11 +1,11 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from "@angular/core";
 
 // Chromium-only event, missing from TypeScript's DOM typings
 interface BeforeInstallPromptEvent extends Event {
     prompt(): Promise<unknown>;
 }
 
-const STORAGE_KEY = 'installDismissed';
+const STORAGE_KEY = "installDismissed";
 
 // iOS never fires beforeinstallprompt (in any browser, they are all WebKit); the only
 // way to install there is the share sheet's "Add to Home Screen", so the banner explains it.
@@ -14,15 +14,15 @@ function needsManualInstall(): boolean {
     const isIos =
         /iPad|iPhone|iPod/.test(ua) ||
         // iPadOS reports itself as a Mac, but no real Mac has a touch screen
-        (ua.includes('Macintosh') && navigator.maxTouchPoints > 1);
+        (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
     const isInstalled =
-        window.matchMedia('(display-mode: standalone)').matches ||
+        window.matchMedia("(display-mode: standalone)").matches ||
         (navigator as Navigator & { standalone?: boolean }).standalone === true;
     return isIos && !isInstalled;
 }
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: "root",
 })
 export class InstallService {
     private promptEvent = signal<BeforeInstallPromptEvent | null>(null);
@@ -36,11 +36,11 @@ export class InstallService {
 
     constructor() {
         // Fired only when the browser considers the app installable and it is not installed yet
-        window.addEventListener('beforeinstallprompt', (event) => {
+        window.addEventListener("beforeinstallprompt", (event) => {
             event.preventDefault(); // suppress the browser's own install prompt in favor of the banner
             this.promptEvent.set(event as BeforeInstallPromptEvent);
         });
-        window.addEventListener('appinstalled', () =>
+        window.addEventListener("appinstalled", () =>
             this.promptEvent.set(null),
         );
     }
@@ -56,7 +56,7 @@ export class InstallService {
     dismiss(): void {
         this.dismissed.set(true);
         try {
-            localStorage.setItem(STORAGE_KEY, 'true');
+            localStorage.setItem(STORAGE_KEY, "true");
         } catch {
             // storage unavailable (private mode etc.) — banner still stays hidden for this session
         }
@@ -64,7 +64,7 @@ export class InstallService {
 
     private readDismissed(): boolean {
         try {
-            return localStorage.getItem(STORAGE_KEY) === 'true';
+            return localStorage.getItem(STORAGE_KEY) === "true";
         } catch {
             return false;
         }

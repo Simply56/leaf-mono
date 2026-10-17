@@ -1,7 +1,7 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-    name: 'computeWateredDaysAgo',
+    name: "computeWateredDaysAgo",
 })
 export class ComputeWateredDaysAgoPipe implements PipeTransform {
     transform(lastWatered: Date): number {

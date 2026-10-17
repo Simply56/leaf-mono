@@ -1,7 +1,7 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-    name: 'valueToColor',
+    name: "valueToColor",
 })
 export class ValueToColorPipe implements PipeTransform {
     transform(value: number, maxValue: number = 10): string {
