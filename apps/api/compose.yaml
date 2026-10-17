@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    pull_policy: build
+    init: true
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      LEAF_API_KEY: ${LEAF_API_KEY:?set LEAF_API_KEY in .env (see .env.example)}
+      TINIFY_API_KEY: ${TINIFY_API_KEY:?set TINIFY_API_KEY in .env (see .env.example)}
+    volumes:
+      - db:/app/data
+      - uploads:/app/static
+
+volumes:
+  db:
+  uploads:
