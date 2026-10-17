@@ -216,6 +216,12 @@ describe("/plants", () => {
                 { name: "Fern", lastWatered: "yesterday" },
             ],
             ["a non-string name", { name: 42 }],
+            // Only the upload endpoint sets it. The path is also what gets
+            // deleted when the image is replaced or the plant removed.
+            [
+                "an imagePath",
+                { name: "Fern", imagePath: "/static/plant_1_1.png" },
+            ],
         ];
 
         it.each(invalidBodies)("rejects POST with %s", async (_label, body) => {

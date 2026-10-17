@@ -86,8 +86,20 @@ export class PlantsService {
         if (plant.imagePath === DEFAULT_PLANT_IMAGE_PATH) {
             return;
         }
+        // Whatever the row says, only ever delete a file directly in static/.
+        const staticDir = path.join(process.cwd(), "static");
+        const filePath = path.resolve(
+            staticDir,
+            path.posix.relative("/static", plant.imagePath),
+        );
+        if (path.dirname(filePath) !== staticDir) {
+            console.log(
+                `Not deleting image outside static/: ${plant.imagePath}`,
+            );
+            return;
+        }
         try {
-            fs.unlinkSync(path.join(process.cwd(), plant.imagePath));
+            fs.unlinkSync(filePath);
             plant.imagePath = DEFAULT_PLANT_IMAGE_PATH;
         } catch (e: unknown) {
             if (e instanceof Error) {

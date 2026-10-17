@@ -1,10 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
-import {
-    IsDateString,
-    IsOptional,
-    IsString,
-    ValidateIf,
-} from "class-validator";
+import { IsDateString, IsOptional, IsString } from "class-validator";
 import type { Express } from "express";
 
 export class CreatePlantDto {
@@ -16,15 +11,8 @@ export class CreatePlantDto {
     @IsString()
     name: string;
 
-    // May be left out, but not null: the column is NOT NULL with a default.
-    @ApiPropertyOptional({
-        description: "Path or URL to the plant image",
-        example: "/static/plant_1_1712345678.png",
-        maxLength: 500,
-    })
-    @ValidateIf((_, value) => value !== undefined)
-    @IsString()
-    imagePath?: string;
+    // No `imagePath`: only the upload endpoint sets it, and it names the file
+    // that is deleted when the image is replaced or the plant removed.
 
     @ApiPropertyOptional({
         description: "Last watering date in ISO 8601 format",
