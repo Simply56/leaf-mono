@@ -1,0 +1,23 @@
+# The build context is the repository root (see apps/api/compose.yaml), but
+# only the api is built into the image. The web app's manifest is kept because
+# the shared lockfile lists it.
+apps/web/*
+!apps/web/package.json
+
+**/node_modules
+**/dist
+.git
+**/.claude
+
+**/.env
+**/.env.*
+!**/.env.example
+
+**/*.log
+apps/api/plants.db
+apps/api/static/*
+!apps/api/static/defaultPlant.png
+
+apps/api/Dockerfile
+apps/api/compose.yaml
+.dockerignore

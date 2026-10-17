@@ -1,6 +1,12 @@
+# Keeps the project (and therefore volume) names from before the move into the
+# monorepo, instead of deriving them from the `api` directory name.
+name: leaf-nest
+
 services:
   app:
-    build: .
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
     pull_policy: build
     init: true
     restart: unless-stopped

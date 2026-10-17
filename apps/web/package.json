@@ -1,12 +1,12 @@
 {
-    "name": "leaf-ng",
+    "name": "web",
     "version": "1.0.0",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
-        "deploy": "ng deploy --base-href=/leaf_ng/",
+        "deploy": "ng deploy --base-href=/leaf_ng/ --repo=git@github.com:Simply56/leaf_ng.git",
         "lint": "eslint src",
         "lint:fix": "eslint src --fix",
         "format": "prettier --write \"src/**/*.{ts,html,css,json}\"",
