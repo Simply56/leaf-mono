@@ -1,0 +1,385 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+    color-scheme: light;
+    --primary-color: #4caf50;
+    --primary-hover: #45a049;
+    --background-color: #f5f5f5;
+    --text-color: #333;
+    --card-background: #fff;
+    --border-color: #ddd;
+    --input-background: #fff;
+    --muted-background: #f8f8f8;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --overlay-background: rgba(255, 255, 255, 0.7);
+    --status-lightness: 40%;
+    --spacing-unit: clamp(0.5rem, 2vw, 1rem);
+    --container-width: min(90%, 800px);
+}
+
+/* Dark theme: follows the OS unless the user picked light, or forced via the toggle */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --background-color: #121212;
+        --text-color: #e0e0e0;
+        --card-background: #1e1e1e;
+        --border-color: #444;
+        --input-background: #2a2a2a;
+        --muted-background: #2a2a2a;
+        --shadow: rgba(0, 0, 0, 0.5);
+        --overlay-background: rgba(0, 0, 0, 0.6);
+        --status-lightness: 60%;
+    }
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --background-color: #121212;
+    --text-color: #e0e0e0;
+    --card-background: #1e1e1e;
+    --border-color: #444;
+    --input-background: #2a2a2a;
+    --muted-background: #2a2a2a;
+    --shadow: rgba(0, 0, 0, 0.5);
+    --overlay-background: rgba(0, 0, 0, 0.6);
+    --status-lightness: 60%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+        Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    font-size: clamp(16px, 1.5vw, 18px);
+    padding: var(--spacing-unit);
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: var(--spacing-unit);
+}
+
+h1 {
+    text-align: center;
+    padding-inline: 3.5rem;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+    color: var(--primary-color);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+h2 {
+    margin: calc(var(--spacing-unit) * 1.5) 0;
+    color: var(--primary-color);
+    font-size: clamp(1.2rem, 3vw, 2rem);
+}
+
+input[type="text"] {
+    padding: calc(var(--spacing-unit) * 0.75);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    font-size: 1em;
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.plants-list {
+    padding: 1%;
+    display: grid;
+    gap: 20px;
+}
+
+.plant-card {
+    background: var(--card-background);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.plant-image {
+    width: min(150px, 30vw);
+    height: min(150px, 30vw);
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+}
+
+button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 1.25);
+    border-radius: 0.25rem;
+    margin-top: var(--spacing-unit);
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.water-button {
+    width: 100%;
+    margin: 20px 0;
+    background-color: #2196f3;
+}
+
+.water-button:hover {
+    background-color: #1976d2;
+}
+
+.datetime-picker {
+    margin: calc(var(--spacing-unit) * 1.5) 0;
+    background: var(--card-background);
+    padding: var(--spacing-unit);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.datetime-picker label {
+    display: block;
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.datetime-picker input[type="date"] {
+    width: 100%;
+    padding: calc(var(--spacing-unit) * 0.75);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    font-size: 1em;
+    margin-bottom: var(--spacing-unit);
+    background-color: var(--input-background);
+    color: var(--text-color);
+    cursor: pointer;
+    transition:
+        border-color 0.3s,
+        box-shadow 0.3s;
+}
+
+.datetime-picker input[type="date"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.datetime-picker input[type="date"]::-webkit-calendar-picker-indicator {
+    background-color: var(--primary-color);
+    padding: 0.25rem;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    filter: invert(1);
+}
+
+.datetime-picker input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    background-color: var(--primary-hover);
+}
+
+.qr-info {
+    background: var(--card-background);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.qr-url {
+    word-break: break-all;
+    background: var(--muted-background);
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+@media (min-width: 600px) {
+    .plants-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.plant-detail-image {
+    width: min(300px, 80vw);
+    height: min(300px, 80vw);
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin: calc(var(--spacing-unit) * 1.5) auto;
+    display: block;
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.watering-info {
+    background: var(--card-background);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+.qr-download {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.qr-button {
+    background-color: #2196f3;
+    font-size: 18px;
+    padding: 12px 24px;
+}
+
+.qr-button:hover {
+    background-color: #1976d2;
+}
+
+.qr-codes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(150px, 30vw), 1fr));
+    gap: var(--spacing-unit);
+    padding: var(--spacing-unit);
+}
+
+.qr-code-container {
+    text-align: center;
+    padding: 10px;
+}
+
+.qr-code {
+    display: inline-block;
+    margin: 5px 0;
+    padding: 5px;
+}
+
+.qr-row {
+    display: flex;
+    line-height: 1;
+}
+
+.qr-cell {
+    width: 5px;
+    height: 5px;
+}
+
+.qr-cell.black {
+    background-color: black;
+}
+
+.qr-cell.white {
+    background-color: white;
+}
+
+.spinner-overlay {
+    position: fixed; /* stays in place even when scrolling */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--overlay-background); /* optional dim background */
+    z-index: 9999;
+}
+
+.spinner {
+    border: 4px solid var(--background-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media print {
+    body {
+        background: white;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .qr-codes-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+        padding: 15px;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .qr-code-container {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        background: none;
+        box-shadow: none;
+        width: 100%;
+        max-width: 100%;
+        padding: 5px;
+    }
+
+    .qr-code {
+        border: 1px solid black;
+        background: white;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        transform: scale(0.8);
+        transform-origin: center;
+        margin: 2px 0;
+        padding: 2px;
+    }
+
+    .qr-cell {
+        width: 4px;
+        height: 4px;
+    }
+
+    .qr-cell.black {
+        background-color: black !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .qr-cell.white {
+        background-color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

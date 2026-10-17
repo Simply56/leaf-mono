@@ -1,0 +1,89 @@
+/* Sits in the page's top-right corner and scrolls away with the content;
+   colors, radius and hover come from the global button styles */
+.theme-toggle {
+    position: absolute;
+    top: var(--spacing-unit);
+    right: var(--spacing-unit);
+    margin: 0;
+    padding: calc(var(--spacing-unit) * 0.5);
+    line-height: 0;
+}
+
+.theme-toggle svg,
+.share-icon {
+    width: 1.25em;
+    height: 1.25em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.share-icon {
+    vertical-align: text-bottom;
+}
+
+.error-banner,
+.install-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-unit);
+    max-width: min(var(--container-width), calc(100% - 7rem));
+    margin: var(--spacing-unit) auto;
+    padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.error-banner {
+    background-color: #dc3545;
+    color: white;
+}
+
+.install-banner {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+}
+
+.install-actions {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 0.5);
+    flex-shrink: 0;
+}
+
+.install-actions button {
+    margin: 0;
+}
+
+.install-dismiss {
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    color: inherit;
+    line-height: 1;
+}
+
+.install-dismiss:hover {
+    background-color: var(--muted-background);
+}
+
+.error-dismiss {
+    margin: 0;
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    line-height: 1;
+}
+
+.error-dismiss:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+@media print {
+    .error-banner,
+    .install-banner,
+    .theme-toggle {
+        display: none;
+    }
+}

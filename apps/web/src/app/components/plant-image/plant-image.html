@@ -1,0 +1,18 @@
+<input
+    #imageInput
+    style="display: none"
+    type="file"
+    id="imageInput"
+    name="image"
+    accept="image/*"
+    (change)="updateImage()"
+/>
+
+<img
+    [src]="plant.imagePath"
+    [alt]="plant.name"
+    class="plant-detail-image"
+    (click)="imageInput.click()"
+    style="cursor: pointer"
+    title="Click to change image"
+/>

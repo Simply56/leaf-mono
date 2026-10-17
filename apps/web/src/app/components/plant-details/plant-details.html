@@ -1,0 +1,58 @@
+@let p = plant();
+@if (p != null) {
+    <div class="plant-status">
+        <h1
+            #plantNameHeading
+            id="plant_title"
+            contenteditable="true"
+            (keypress)="renamePlant($event)"
+        >
+            {{ p.name }}
+        </h1>
+
+        <app-plant-image [plant]="p" />
+
+        <div class="watering-info">
+            @if (p.lastWatered == null) {
+                <p>This plant has never been watered.</p>
+            } @else {
+                <p>Last watered: {{ p.lastWatered | date: "fullDate" }}</p>
+
+                <p>
+                    Days since last watering:
+                    <span
+                        [style.color]="
+                            p.lastWatered | computeWateredDaysAgo | valueToColor
+                        "
+                    >
+                        {{ p.lastWatered | computeWateredDaysAgo }}
+                    </span>
+                </p>
+            }
+        </div>
+
+        <div>
+            <div class="datetime-picker">
+                <label
+                    >When did you water this plant?
+                    <input type="date" [(ngModel)]="selectedDate" />
+                </label>
+            </div>
+            <button class="water-button" (click)="waterPlant()">
+                Log Watering
+            </button>
+        </div>
+        <div class="qr-info">
+            <h2>QR Code Information</h2>
+            <p>Paste this into a QR code generator and stick it on it's pot</p>
+            <p class="qr-url">{{ fullUrl }}</p>
+        </div>
+
+        <div class="button-container">
+            <button routerLink="">Back to Plants</button>
+            <button class="button delete-button" (click)="deletePlant()">
+                Delete {{ p.name }}
+            </button>
+        </div>
+    </div>
+}

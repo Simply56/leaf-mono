@@ -1,0 +1,17 @@
+<div class="plant-card">
+    <app-plant-image [plant]="plant" />
+    <h3>{{ plant.name }}</h3>
+    @if (plant.lastWatered != null) {
+        <p>
+            Days since last watering: <span
+                [style.color]="
+                    plant.lastWatered | computeWateredDaysAgo | valueToColor
+                "
+                >{{ plant.lastWatered | computeWateredDaysAgo }}
+            </span>
+        </p>
+    } @else {
+        <p>Never watered</p>
+    }
+    <button [routerLink]="['plant', plant.id]">View Details</button>
+</div>

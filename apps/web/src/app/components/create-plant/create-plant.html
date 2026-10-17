@@ -1,0 +1,14 @@
+<div class="add-plant">
+    <h2>Add New Plant</h2>
+    <div class="createPlant">
+        <input
+            #createPlantInput
+            type="text"
+            placeholder="Plant Name"
+            required
+        />
+        <button (click)="service.addPlant(createPlantInput.value)">
+            Add Plant
+        </button>
+    </div>
+</div>
