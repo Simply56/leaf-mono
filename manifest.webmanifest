@@ -4,6 +4,8 @@
     "display": "standalone",
     "scope": "./",
     "start_url": "./",
+    "background_color": "#eef3ee",
+    "theme_color": "#eef3ee",
     "icons": [
         {
             "src": "windows11/SmallTile.scale-100.png",

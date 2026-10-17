@@ -4,8 +4,10 @@
         <meta charset="utf-8">
         <title>Leaf</title>
         <base href="/leaf-mono/">
-        <meta name="theme-color" content="#4CAF50">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The page background of each theme; ThemeService keeps them in sync with the toggle -->
+        <meta name="theme-color" content="#eef3ee" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#101612" media="(prefers-color-scheme: dark)">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <link rel="icon" type="image/png" href="favicon.png">
         <link rel="manifest" href="manifest.webmanifest">
         <script>
@@ -14,13 +16,19 @@
                 const theme = localStorage.getItem("theme");
                 if (theme === "light" || theme === "dark") {
                     document.documentElement.dataset.theme = theme;
+                    const color = theme === "dark" ? "#101612" : "#eef3ee";
+                    for (const meta of document.querySelectorAll(
+                        'meta[name="theme-color"]',
+                    )) {
+                        meta.setAttribute("content", color);
+                    }
                 }
             } catch {}
         </script>
-    <style>:root{color-scheme:light;--primary-color:#4caf50;--primary-hover:#45a049;--background-color:#f5f5f5;--text-color:#333;--card-background:#fff;--border-color:#ddd;--input-background:#fff;--muted-background:#f8f8f8;--shadow:rgba(0, 0, 0, .1);--overlay-background:rgba(255, 255, 255, .7);--status-lightness:40%;--spacing-unit:clamp(.5rem, 2vw, 1rem);--container-width:min(90%, 800px)}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;line-height:1.6;color:var(--text-color);background-color:var(--background-color);font-size:clamp(16px,1.5vw,18px);padding:var(--spacing-unit)}</style><link rel="stylesheet" href="styles-Z6UIC6OC.css" media="print" data-beasties-media="all"><noscript><link rel="stylesheet" href="styles-Z6UIC6OC.css"></noscript></head>
+    <style>:root{color-scheme:light;--bg:#eef3ee;--surface:#ffffff;--surface-sunken:#e2e9e2;--text:#17251b;--text-muted:#55655a;--border:#d3ddd4;--primary:#2d6a3e;--on-primary:#ffffff;--water:#1f64a8;--on-water:#ffffff;--water-soft:#dfeaf6;--danger:#b3261e;--on-danger:#ffffff;--tone-ok:#2f7d3c;--tone-soon:#8f5a00;--tone-due:#b3261e;--ring-track:#d7e0d8;--inverse-surface:#233128;--on-inverse-surface:#eef3ee;--inverse-accent:#a6dcb2;--focus:#1f64a8;--backdrop:rgb(16 22 18 / .45);--shadow-raised:0 6px 20px rgb(23 37 27 / .18);--radius-s:.625rem;--radius-m:1rem;--radius-l:1.5rem;--gutter:1rem;--font-body:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;--font-display:ui-rounded, "SF Pro Rounded", var(--font-body)}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}body{min-height:100dvh;font-family:var(--font-body);font-size:1rem;line-height:1.5;color:var(--text);background-color:var(--bg);-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}</style><link rel="stylesheet" href="styles-Q574SJSY.css" media="print" data-beasties-media="all"><noscript><link rel="stylesheet" href="styles-Q574SJSY.css"></noscript></head>
     <body>
         <app-root></app-root>
         <noscript>Please enable JavaScript to continue using this
             application.</noscript>
-    <script src="main-O2VYMUBT.js" type="module"></script><script>document.querySelectorAll('link[data-beasties-media]').forEach(function(l){l.media=l.getAttribute('data-beasties-media');l.removeAttribute('data-beasties-media')})</script></body>
+    <script src="main-G3QYIDNU.js" type="module"></script><script>document.querySelectorAll('link[data-beasties-media]').forEach(function(l){l.media=l.getAttribute('data-beasties-media');l.removeAttribute('data-beasties-media')})</script></body>
 </html>
