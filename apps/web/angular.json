@@ -75,7 +75,10 @@
                     },
                     "defaultConfiguration": "development",
                     "options": {
-                        "proxyConfig": "proxy.conf.json"
+                        "proxyConfig": "proxy.conf.json",
+                        "prebundle": {
+                            "exclude": ["@leaf/shared"]
+                        }
                     }
                 },
                 "extract-i18n": {
