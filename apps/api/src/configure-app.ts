@@ -23,6 +23,9 @@ export function configureApp(app: NestExpressApplication): void {
     const config = new DocumentBuilder()
         .setTitle("LEAF")
         .setDescription("API for watering plants")
+        // Every API route takes the key as `?apiKey=` (ApiKeyGuard); this
+        // gives Swagger UI an "Authorize" button that adds it.
+        .addApiKey({ type: "apiKey", in: "query", name: "apiKey" }, "apiKey")
         .build();
 
     const document = SwaggerModule.createDocument(app, config, {
@@ -30,5 +33,7 @@ export function configureApp(app: NestExpressApplication): void {
     });
 
     // Serve Swagger UI
-    SwaggerModule.setup("api", app, document);
+    SwaggerModule.setup("api", app, document, {
+        swaggerOptions: { persistAuthorization: true },
+    });
 }

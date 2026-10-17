@@ -54,6 +54,28 @@ describe("application setup", () => {
             expect(methodsOf("/plants/{id}/image")).toEqual(["post"]);
         });
 
+        it("documents the apiKey query parameter that every route requires", async () => {
+            const doc = (await ctx.request().get("/api-json")).body;
+
+            // Lets Swagger UI's "Authorize" button send the key with
+            // "Try it out" requests.
+            expect(doc.components.securitySchemes).toEqual({
+                apiKey: { type: "apiKey", in: "query", name: "apiKey" },
+            });
+            for (const [route, operations] of Object.entries(
+                doc.paths as Record<string, Record<string, unknown>>,
+            )) {
+                for (const [method, operation] of Object.entries(operations)) {
+                    expect({
+                        route,
+                        method,
+                        security: (operation as { security?: unknown })
+                            .security,
+                    }).toEqual({ route, method, security: [{ apiKey: [] }] });
+                }
+            }
+        });
+
         it("documents the plant request bodies and responses", async () => {
             const doc = (await ctx.request().get("/api-json")).body;
             type Schema = {

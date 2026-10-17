@@ -24,6 +24,7 @@ import {
     ApiConsumes,
     ApiCreatedResponse,
     ApiOkResponse,
+    ApiSecurity,
     ApiTags,
 } from "@nestjs/swagger";
 import { ApiKeyGuard } from "../auth/api-key.guard";
@@ -35,6 +36,7 @@ import { PlantsService } from "./plants.service";
 @ApiTags("plants")
 @Controller("plants")
 @UseGuards(ApiKeyGuard)
+@ApiSecurity("apiKey")
 export class PlantsController {
     constructor(private readonly plantsService: PlantsService) {}
 
