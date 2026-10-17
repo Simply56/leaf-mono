@@ -25,6 +25,7 @@ Run from the repository root:
 
 | Command             | What it does                                     |
 | ------------------- | ------------------------------------------------ |
+| `npm run dev`       | Everything for local development: shared package watcher, API on http://localhost:3000, web app on http://localhost:4200 |
 | `npm run dev:web`   | Angular dev server on http://localhost:4200      |
 | `npm run dev:api`   | API in watch mode on http://localhost:3000       |
 | `npm run dev:shared` | Rebuild `@leaf/shared` whenever its source changes |
@@ -37,7 +38,7 @@ Any other script of an app runs with `-w <workspace>`, e.g. `npm run start:prod 
 
 Both apps share one ESLint and one Prettier configuration at the root: 4-space indentation and double quotes everywhere.
 
-The web app talks to the deployed API by default. To use a local API, see "Backend and auth" in `apps/web/CLAUDE.md`.
+In development the web app talks to the local API (its dev server proxies `/plants` and `/static` to port 3000), so `npm run dev` needs `apps/api/.env`; placeholder values are fine unless you upload images. To work on the web app against the deployed API instead, run `npm run start:vps -w web`. Production builds always use the deployed API.
 
 ## More
 

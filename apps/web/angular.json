@@ -44,6 +44,17 @@
                         "development": {
                             "optimization": false,
                             "extractLicenses": false,
+                            "sourceMap": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/app/environments/environments.ts",
+                                    "with": "src/app/environments/environments.development.ts"
+                                }
+                            ]
+                        },
+                        "development-vps": {
+                            "optimization": false,
+                            "extractLicenses": false,
                             "sourceMap": true
                         }
                     },
@@ -57,9 +68,15 @@
                         },
                         "development": {
                             "buildTarget": "leaf-ng:build:development"
+                        },
+                        "development-vps": {
+                            "buildTarget": "leaf-ng:build:development-vps"
                         }
                     },
-                    "defaultConfiguration": "development"
+                    "defaultConfiguration": "development",
+                    "options": {
+                        "proxyConfig": "proxy.conf.json"
+                    }
                 },
                 "extract-i18n": {
                     "builder": "@angular/build:extract-i18n"

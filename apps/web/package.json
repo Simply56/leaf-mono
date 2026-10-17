@@ -4,6 +4,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
+        "start:vps": "ng serve --configuration development-vps",
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
         "deploy": "ng deploy --base-href=/leaf-mono/"

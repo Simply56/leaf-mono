@@ -11,7 +11,8 @@ Leaf (`leaf-ng`, workspace `web`) is an Angular 22 PWA for tracking when housepl
 Dependencies are installed once at the repository root (`npm install` there). Run these from `apps/web`, or from the root with `-w web` (e.g. `npm run build -w web`):
 
 ```bash
-npm start              # ng serve, development config, http://localhost:4200
+npm start              # ng serve, development config, http://localhost:4200, against the local api
+npm run start:vps      # the same, against the deployed api
 npm run build          # production build to dist/leaf_ng (includes the service worker)
 npm run watch          # development build in watch mode
 npm run deploy         # build + publish to GitHub Pages with --base-href=/leaf-mono/
@@ -23,7 +24,7 @@ There is no test suite, on purpose: no spec files, no test runner installed, and
 
 ## Backend and auth
 
-- `src/app/environments/environments.ts` holds a hardcoded `useVps` flag that picks the API base URL: the deployed VPS (`true`, the committed default) or the api from `apps/api` running locally at `http://127.0.0.1:3000` (`false`; start it with `npm run dev:api` at the root). There are no Angular `fileReplacements`; flip the flag by hand for local backend work and do not commit it flipped.
+- `environment.url` is the API base URL. `src/app/environments/environments.ts` (production builds, and the `development-vps` configuration behind `npm run start:vps`) points at the deployed VPS. The `development` configuration swaps in `environments.development.ts` through `fileReplacements` in `angular.json`: its empty `url` keeps requests on the dev server's origin, and `proxy.conf.json` forwards `/plants` and `/static` to the local api on port 3000 (`npm run dev` at the root starts both).
 - Every request carries the API key as an `?apiKey=` query parameter (`PlantsService.buildUrl`). `AuthService.getApiKey()` resolves it in order: in-memory → `localStorage['apiKey']` → `?apiKey=` in the page URL (then persisted) → a blocking `window.prompt`. The resolved key is written onto the mutable `environment.apiKey`.
 - The `parse` step of the plants resource in `PlantsService` first checks the response against `PlantListSchema` from `@leaf/shared` (the contract the API is tested against); a mismatch fails the load, which shows the error banner, and logs the schema's issues to the console. It then prefixes the server-relative `imagePath` with `environment.url` and converts `lastWatered` strings to `Date`. The app's `Plant` (`models/plantInfo.model.ts`) is derived from the shared type with those two changes; request bodies are typed with the shared `CreatePlantRequest` / `UpdatePlantRequest`.
 

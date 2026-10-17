@@ -16,9 +16,9 @@ There is no monorepo tool (no Nx, Turborepo); that is deliberate. Each app keeps
 
 `npm install` runs at the root only; there is one `package-lock.json`, at the root. To add a dependency to an app, run `npm install <pkg> -w web` (or `-w api`) at the root, never `npm install` inside an app folder. Repo-wide dev tools (ESLint, Prettier) are root `devDependencies`.
 
-Root scripts: `npm run dev:web`, `npm run dev:api`, `npm run dev:shared` (rebuilds the shared package on change), `npm run build` (shared package first, then both apps), `npm test` (api only; the web app has no tests on purpose), and the repo-wide `npm run lint` / `lint:fix` and `npm run format` / `format:check`. Any other app script runs from the root with `-w <workspace>`, or from inside the app folder.
+Root scripts: `npm run dev` (the shared package's watcher, the api in watch mode and the web dev server together; the web app reaches the local api through its dev-server proxy), or one at a time `npm run dev:web`, `npm run dev:api`, `npm run dev:shared` (rebuilds the shared package on change), `npm run build` (shared package first, then both apps), `npm test` (api only; the web app has no tests on purpose), and the repo-wide `npm run lint` / `lint:fix` and `npm run format` / `format:check`. Any other app script runs from the root with `-w <workspace>`, or from inside the app folder.
 
-The apps import `@leaf/shared` from its compiled `packages/shared/dist`. `npm install` builds it (its `prepare` script); after changing `packages/shared/src`, run `npm run build:shared` or keep `npm run dev:shared` running, or the apps keep seeing the old schemas.
+The apps import `@leaf/shared` from its compiled `packages/shared/dist`. `npm install` builds it (its `prepare` script); after changing `packages/shared/src`, run `npm run build:shared` or keep `npm run dev:shared` running, or the apps keep seeing the old schemas. The web dev server picks up the rebuilt package; the api's watcher does not, so restart it (or `npm run dev`) after changing the schemas.
 
 Verify a change with `npm run lint` and `npm run format:check`, plus the build (and for the api, the tests) of the app it touches.
 
