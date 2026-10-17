@@ -30,8 +30,6 @@ One configuration for the whole repository, at the root:
 - ESLint (`eslint.config.mjs`): `typescript-eslint`'s recommended rules on every `.ts` file in both apps.
 - `.editorconfig` matches the Prettier settings for editors.
 
-Commit formatting-only changes separately and add their hashes to `.git-blame-ignore-revs`.
-
 ## Shared contract (`packages/shared`)
 
 `packages/shared/src/plant.ts` defines what the API accepts and returns, as Zod schemas with the TypeScript types inferred from them. Change the contract there, never in one app:
