@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 An npm workspaces monorepo with two apps and one shared package:
 
 - `apps/web` (workspace `web`): Angular 22 PWA. Its own `CLAUDE.md` covers architecture and conventions; read it before working there.
-- `apps/api` (workspace `api`): NestJS 12 REST API on SQLite. `apps/api/README.md` documents endpoints, auth and environment variables.
+- `apps/api` (workspace `api`): NestJS 12 REST API on SQLite. `apps/api/README.md` documents endpoints, auth and environment variables; its `CLAUDE.md` covers request flow, the database, images and the test setup. Read it before working there.
 - `packages/shared` (workspace `@leaf/shared`): the API contract as Zod schemas, used by both apps. See "Shared contract" below.
 
 There is no monorepo tool (no Nx, Turborepo); that is deliberate. Each app keeps its own CLI (`ng`, `nest`) and build config; linting and formatting are shared.
@@ -16,11 +16,11 @@ There is no monorepo tool (no Nx, Turborepo); that is deliberate. Each app keeps
 
 `npm install` runs at the root only; there is one `package-lock.json`, at the root. To add a dependency to an app, run `npm install <pkg> -w web` (or `-w api`) at the root, never `npm install` inside an app folder. Repo-wide dev tools (ESLint, Prettier) are root `devDependencies`.
 
-Root scripts: `npm run dev` (the shared package's watcher, the api in watch mode and the web dev server together; the web app reaches the local api through its dev-server proxy), or one at a time `npm run dev:web`, `npm run dev:api`, `npm run dev:shared` (rebuilds the shared package on change), `npm run build` (shared package first, then both apps), `npm test` (api only; the web app has no tests on purpose), and the repo-wide `npm run lint` / `lint:fix` and `npm run format` / `format:check`. Any other app script runs from the root with `-w <workspace>`, or from inside the app folder.
+Root scripts: `npm run dev` (the shared package's watcher, the api in watch mode and the web dev server together; the web app reaches the local api through its dev-server proxy), or one at a time `npm run dev:web`, `npm run dev:api`, `npm run dev:shared` (rebuilds the shared package on change), `npm run build` (shared package first, then both apps), `npm test` (api only; the web app has no tests on purpose), `npm run typecheck` (the api's `src` and `test`; the builds type-check the web app and the shared package), and the repo-wide `npm run lint` / `lint:fix` and `npm run format` / `format:check`. Any other app script runs from the root with `-w <workspace>`, or from inside the app folder.
 
 The apps import `@leaf/shared` from its compiled `packages/shared/dist`. `npm install` builds it (its `prepare` script); after changing `packages/shared/src`, run `npm run build:shared` or keep `npm run dev:shared` running, or the apps keep seeing the old schemas. The web dev server picks up the rebuilt package; the api's watcher does not, so restart it (or `npm run dev`) after changing the schemas.
 
-Verify a change with `npm run lint` and `npm run format:check`, plus the build (and for the api, the tests) of the app it touches.
+Verify a change with `npm run lint` and `npm run format:check`, plus the build (and for the api, `npm test` and `npm run typecheck`) of the app it touches. CI (`.github/workflows/ci.yml`) runs all of these on every push to `main` and on pull requests.
 
 ## Linting and formatting
 

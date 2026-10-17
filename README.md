@@ -31,6 +31,7 @@ Run from the repository root:
 | `npm run dev:shared` | Rebuild `@leaf/shared` whenever its source changes |
 | `npm run build`     | Build the shared package, then both apps (`build:shared` / `build:web` / `build:api` for one) |
 | `npm test`          | API test suite (the web app has no tests)        |
+| `npm run typecheck` | Type-check the API, including its tests          |
 | `npm run lint`      | ESLint over the whole repository (`lint:fix` to autofix) |
 | `npm run format`    | Prettier over the whole repository (`format:check` to verify) |
 
@@ -40,7 +41,10 @@ Both apps share one ESLint and one Prettier configuration at the root: 4-space i
 
 In development the web app talks to the local API (its dev server proxies `/plants` and `/static` to port 3000), so `npm run dev` needs `apps/api/.env`; placeholder values are fine unless you upload images. To work on the web app against the deployed API instead, run `npm run start:vps -w web`. Production builds always use the deployed API.
 
+GitHub Actions (`.github/workflows/ci.yml`) runs the format check, lint, type check, build and tests on every push to `main` and on pull requests.
+
 ## More
 
 - `apps/api/README.md`: API endpoints, environment variables, Docker
 - `apps/web/CLAUDE.md`: frontend architecture, theming, PWA and deployment notes
+- `apps/api/CLAUDE.md`: API request flow, database, images and test setup
