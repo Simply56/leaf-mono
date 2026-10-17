@@ -1,19 +1,12 @@
 import { auth, DATABASE_PATH, useTestApp } from "./support/app";
+import { expectPlant, expectPlantList } from "./support/contract";
 import { readPlantRow } from "./support/sqlite";
 
 /** `YYYY-MM-DD HH:MM:SS.mmm`, the text format of every date in the production database. */
 const STORED_DATE_FORMAT = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$/;
 
-/**
- * The write endpoints must hand back the instant they were given, as an ISO
- * 8601 string. Which spelling of that instant they use is deliberately left
- * open here; reads are pinned to the exact `toISOString()` form below.
- */
-function expectIsoInstant(value: unknown, expectedIso: string): void {
-    expect(typeof value).toBe("string");
-    expect(value).toMatch(/^\d{4}-\d{2}-\d{2}(T|$)/);
-    expect(new Date(value as string).toISOString()).toBe(expectedIso);
-}
+// Whatever spelling of a date the client sends, every response (writes
+// included) gives the instant back in the `toISOString()` form.
 
 describe("lastWatered", () => {
     const ctx = useTestApp();
@@ -21,7 +14,7 @@ describe("lastWatered", () => {
     async function getLastWatered(id: number) {
         const res = await ctx.request().get(`/plants/${id}`).query(auth);
         expect(res.status).toBe(200);
-        return res.body.lastWatered;
+        return expectPlant(res.body).lastWatered;
     }
 
     it("runs in a time zone that differs from UTC", () => {
@@ -65,7 +58,7 @@ describe("lastWatered", () => {
                 .send({ name: "Dated", lastWatered: sent });
 
             expect(res.status).toBe(201);
-            expectIsoInstant(res.body.lastWatered, iso);
+            expect(expectPlant(res.body).lastWatered).toBe(iso);
             expect(await getLastWatered(res.body.id)).toBe(iso);
 
             const row = readPlantRow(DATABASE_PATH, res.body.id);
@@ -89,7 +82,9 @@ describe("lastWatered", () => {
             .send({ lastWatered: "2026-12-31T23:59:59.999-08:00" });
 
         expect(res.status).toBe(200);
-        expectIsoInstant(res.body.lastWatered, "2027-01-01T07:59:59.999Z");
+        expect(expectPlant(res.body).lastWatered).toBe(
+            "2027-01-01T07:59:59.999Z",
+        );
         expect(await getLastWatered(created.body.id)).toBe(
             "2027-01-01T07:59:59.999Z",
         );
@@ -165,9 +160,9 @@ describe("lastWatered", () => {
 
         const res = await ctx.request().get("/plants").query(auth);
 
-        const listed = (
-            res.body as { id: number; lastWatered: unknown }[]
-        ).find((plant) => plant.id === created.body.id);
+        const listed = expectPlantList(res.body).find(
+            (plant) => plant.id === created.body.id,
+        );
         expect(listed?.lastWatered).toBe("2026-03-29T01:30:00.000Z");
     });
 });

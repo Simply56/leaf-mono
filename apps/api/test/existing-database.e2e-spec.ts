@@ -1,4 +1,5 @@
 import { auth, DATABASE_PATH, useTestApp } from "./support/app";
+import { expectPlantList } from "./support/contract";
 import {
     type Row,
     readPlantRows,
@@ -162,9 +163,7 @@ describe("an existing production database", () => {
         const res = await ctx.request().get("/plants").query(auth);
 
         expect(res.status).toBe(200);
-        const plants = (res.body as { id: number }[]).sort(
-            (a, b) => a.id - b.id,
-        );
+        const plants = expectPlantList(res.body).sort((a, b) => a.id - b.id);
         expect(plants).toEqual(EXPECTED_PLANTS);
     });
 

@@ -33,13 +33,13 @@ describe("POST /plants/:id/image", () => {
             .query(auth)
             .send({ name });
         expect(res.status).toBe(201);
-        return res.body.id;
+        return expectPlant(res.body).id;
     }
 
     async function getImagePath(id: number): Promise<string> {
         const res = await ctx.request().get(`/plants/${id}`).query(auth);
         expect(res.status).toBe(200);
-        return res.body.imagePath;
+        return expectPlant(res.body).imagePath;
     }
 
     /**

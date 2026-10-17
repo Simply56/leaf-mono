@@ -1,4 +1,5 @@
 import { auth, useTestApp } from "./support/app";
+import { expectPlant, expectPlantList } from "./support/contract";
 
 const DEFAULT_IMAGE_PATH = "/static/defaultPlant.png";
 const MISSING_ID = 999_999;
@@ -9,24 +10,19 @@ describe("/plants", () => {
     async function createPlant(body: Record<string, unknown>) {
         const res = await ctx.request().post("/plants").query(auth).send(body);
         expect(res.status).toBe(201);
-        return res.body as {
-            id: number;
-            name: string;
-            imagePath: string;
-            lastWatered: string | null;
-        };
+        return expectPlant(res.body);
     }
 
     async function getPlant(id: number) {
         const res = await ctx.request().get(`/plants/${id}`).query(auth);
         expect(res.status).toBe(200);
-        return res.body;
+        return expectPlant(res.body);
     }
 
     async function listPlants() {
         const res = await ctx.request().get("/plants").query(auth);
         expect(res.status).toBe(200);
-        return res.body as { id: number }[];
+        return expectPlantList(res.body);
     }
 
     describe("CRUD", () => {
