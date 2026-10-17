@@ -6,11 +6,17 @@
             Days since last watering:
             <span
                 [style.color]="
-                    plant.lastWatered | computeWateredDaysAgo | valueToColor
+                    plant.lastWatered
+                        | computeWateredDaysAgo
+                        | valueToColor: plant.wateringIntervalDays ?? 10
                 "
                 >{{ plant.lastWatered | computeWateredDaysAgo }}
             </span>
         </p>
+        @let due = plant.lastWatered | wateringDue: plant.wateringIntervalDays;
+        @if (due != null) {
+            <p>{{ due }}</p>
+        }
     } @else {
         <p>Never watered</p>
     }

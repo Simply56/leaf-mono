@@ -22,13 +22,50 @@
                     Days since last watering:
                     <span
                         [style.color]="
-                            p.lastWatered | computeWateredDaysAgo | valueToColor
+                            p.lastWatered
+                                | computeWateredDaysAgo
+                                | valueToColor: p.wateringIntervalDays ?? 10
                         "
                     >
                         {{ p.lastWatered | computeWateredDaysAgo }}
                     </span>
                 </p>
+                @let due = p.lastWatered | wateringDue: p.wateringIntervalDays;
+                @if (due != null) {
+                    <p>{{ due }}</p>
+                }
             }
+        </div>
+
+        <div class="interval-picker">
+            <label for="interval-input">Water every</label>
+            <div class="interval-row">
+                <input
+                    id="interval-input"
+                    type="number"
+                    inputmode="numeric"
+                    min="1"
+                    max="365"
+                    step="1"
+                    placeholder="–"
+                    [(ngModel)]="intervalDays"
+                />
+                <span>days</span>
+                <button
+                    (click)="saveInterval()"
+                    [disabled]="
+                        !intervalValid() ||
+                        intervalDays() === p.wateringIntervalDays
+                    "
+                >
+                    Save
+                </button>
+                @if (p.wateringIntervalDays != null) {
+                    <button class="interval-clear" (click)="clearInterval()">
+                        Clear
+                    </button>
+                }
+            </div>
         </div>
 
         <div>

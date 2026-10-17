@@ -197,6 +197,51 @@ button:hover {
     background-color: var(--primary-hover);
 }
 
+.interval-picker {
+    margin: calc(var(--spacing-unit) * 1.5) 0;
+    background: var(--card-background);
+    padding: var(--spacing-unit);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.interval-picker label {
+    display: block;
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+    font-weight: 500;
+}
+
+.interval-row {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 0.75);
+}
+
+.interval-row input {
+    width: 5em;
+    padding: calc(var(--spacing-unit) * 0.75);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    font-size: 1em;
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.interval-row button {
+    margin: 0;
+}
+
+.interval-row button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.interval-row .interval-clear {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
 @media (min-width: 600px) {
     .plants-list {
         grid-template-columns: repeat(2, 1fr);

@@ -5,6 +5,7 @@ import {
     effect,
     ElementRef,
     inject,
+    linkedSignal,
     Signal,
     ViewChild,
 } from "@angular/core";
@@ -13,6 +14,7 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import Plant from "../../models/plantInfo.model";
 import { ComputeWateredDaysAgoPipe } from "../../pipes/compute-watered-days-ago-pipe";
 import { ValueToColorPipe } from "../../pipes/value-to-color-pipe";
+import { WateringDuePipe } from "../../pipes/watering-due-pipe";
 import { PlantsService } from "../../services/plants-service";
 import { PlantImage } from "../plant-image/plant-image";
 
@@ -21,6 +23,7 @@ import { PlantImage } from "../plant-image/plant-image";
     imports: [
         ComputeWateredDaysAgoPipe,
         ValueToColorPipe,
+        WateringDuePipe,
         DatePipe,
         RouterLink,
         PlantImage,
@@ -37,6 +40,16 @@ export class PlantDetails {
         this.service.plants().find((p) => p.id == this.id)!,
     );
     selectedDate: string;
+    // Resets to the stored value whenever the plant reloads; the number input gives null when empty
+    intervalDays = linkedSignal<number | null>(
+        () => this.plant()?.wateringIntervalDays ?? null,
+    );
+    intervalValid = computed(() => {
+        const days = this.intervalDays();
+        return (
+            days != null && Number.isInteger(days) && days >= 1 && days <= 365
+        );
+    });
     @ViewChild("plantNameHeading")
     plantNameHeading!: ElementRef<HTMLHeadingElement>;
     constructor() {
@@ -64,6 +77,17 @@ export class PlantDetails {
             return;
         }
         this.service.waterPlant(this.id, this.selectedDate);
+    }
+
+    saveInterval() {
+        if (!this.intervalValid()) {
+            return;
+        }
+        this.service.setWateringInterval(this.id, this.intervalDays());
+    }
+
+    clearInterval() {
+        this.service.setWateringInterval(this.id, null);
     }
 
     renamePlant(event: KeyboardEvent) {

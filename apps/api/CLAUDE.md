@@ -30,7 +30,7 @@ Jest does not type-check (ts-jest with `isolatedModules`) and `nest build` skips
 ## Database
 
 - The file is `DATABASE_PATH` (default `plants.db` in the working directory). In Docker it is `/app/data/plants.db` on the `leaf-nest_db` volume, which holds the live data.
-- `synchronize: true` is on, against a production database that already exists. `test/existing-database.e2e-spec.ts` builds a file with the exact production schema and rows and checks that booting does not alter it. Any change to the entity changes the production schema on the next deploy: keep that test passing, extend it for the change, and back up the volume before deploying.
+- `synchronize: true` is on, against a production database that already exists. `test/existing-database.e2e-spec.ts` builds a file with the production schema from before the `wateringIntervalDays` column, plus rows, and pins exactly what booting changes: that one column, nothing else, every row kept. Any change to the entity changes the production schema on the next deploy: keep that test passing, extend it for the change, and back up the volume before deploying. On SQLite, synchronize adds a column by rebuilding the table (copy, drop, rename), which keeps the rows but restarts the autoincrement sequence from the highest id.
 - Dates are stored as UTC text, `YYYY-MM-DD HH:MM:SS.mmm`; `test/dates.e2e-spec.ts` pins the storage format and runs in a non-UTC time zone (`TZ=Asia/Kolkata`, set in `jest.config.cjs`) so a local-time mix-up fails instead of passing by accident.
 
 ## Images

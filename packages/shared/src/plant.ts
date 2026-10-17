@@ -25,6 +25,13 @@ export const PlantSchema = z.object({
             example: "2025-09-20T10:30:00.000Z",
         }),
     ),
+    wateringIntervalDays: z.nullable(z.int().check(z.positive())).check(
+        z.meta({
+            description:
+                "Days between waterings, or null when no interval is set",
+            example: 7,
+        }),
+    ),
 });
 
 export const PlantListSchema = z.array(PlantSchema);
@@ -54,17 +61,28 @@ const lastWatered = z
         }),
     );
 
+// Whole days, up to a year. `null` clears the interval.
+const wateringIntervalDays = z
+    .nullable(z.int().check(z.positive(), z.lte(365)))
+    .check(
+        z.meta({
+            description: "Days between waterings (1 to 365)",
+            example: 7,
+        }),
+    );
+
 // Strict: unknown properties are refused. There is no `imagePath`: only the
 // upload endpoint sets it, and it names the file that is deleted when the
 // image is replaced or the plant removed.
 export const CreatePlantRequestSchema = z.strictObject({
     name,
     lastWatered: z.optional(lastWatered),
+    wateringIntervalDays: z.optional(wateringIntervalDays),
 });
 
 export type CreatePlantRequest = z.infer<typeof CreatePlantRequestSchema>;
 
-/** Every field may be left out; only `lastWatered` accepts `null`. */
+/** Every field may be left out; `lastWatered` and `wateringIntervalDays` accept `null`. */
 export const UpdatePlantRequestSchema = z.partial(CreatePlantRequestSchema);
 
 export type UpdatePlantRequest = z.infer<typeof UpdatePlantRequestSchema>;

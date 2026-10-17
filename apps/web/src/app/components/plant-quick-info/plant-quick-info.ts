@@ -4,12 +4,14 @@ import Plant from "../../models/plantInfo.model";
 import { ComputeWateredDaysAgoPipe } from "../../pipes/compute-watered-days-ago-pipe";
 import { RouterLink } from "@angular/router";
 import { PlantImage } from "../plant-image/plant-image";
+import { WateringDuePipe } from "../../pipes/watering-due-pipe";
 
 @Component({
     selector: "app-plant-quick-info",
     imports: [
         ValueToColorPipe,
         ComputeWateredDaysAgoPipe,
+        WateringDuePipe,
         RouterLink,
         PlantImage,
     ],

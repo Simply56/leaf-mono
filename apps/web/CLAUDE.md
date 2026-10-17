@@ -38,13 +38,13 @@ Components use the Angular 22 default change detection strategy, `OnPush` (none 
 
 - The list is an `httpResource` on `GET /plants`. Its URL function returns `undefined` until `AuthService` has resolved the API key, so no request goes out before then; `loading` covers that wait as well as the request itself, which `PlantDetails` relies on to avoid redirecting home too early.
 - Retries are not in the service: `retryInterceptor` (`src/app/interceptors/`) retries every `GET` 5 times, 1s apart. Mutations are never retried.
-- Every mutation (`addPlant`, `renamePlant`, `waterPlant`, `deletePlant`, `updatePlantImage`) is a plain `HttpClient` call passed to the private `mutate()` helper, which on success reloads the resource and on failure sets `error`. There are no optimistic updates and no per-plant fetch; new mutations should follow the same path.
+- Every mutation (`addPlant`, `renamePlant`, `waterPlant`, `setWateringInterval`, `deletePlant`, `updatePlantImage`) is a plain `HttpClient` call passed to the private `mutate()` helper, which on success reloads the resource and on failure sets `error`. There are no optimistic updates and no per-plant fetch; new mutations should follow the same path.
 - `plants` and `error` are `linkedSignal`s over the resource: `plants` keeps the last loaded list while reloading and after a failed reload; `error` follows the load status but is also set by failed mutations and cleared by the user.
 - `error` is rendered as a dismissible banner in the root `App` template, so components do not handle request errors themselves.
 
 Routes (`app.routes.ts`): `''` → `PlantsOverview`, `plant/:id` → `PlantDetails`. `PlantDetails` does not fetch; it derives its plant with a `computed` over `service.plants()` and redirects home via an `effect` once loading finishes without a match.
 
-The "days since watered" display is two chained pipes: `computeWateredDaysAgo` (Date → whole days) then `valueToColor` (days → green-to-red `hsl()` over a 10-day scale, using the `--status-lightness` CSS variable so it works in both themes).
+The "days since watered" display is two chained pipes: `computeWateredDaysAgo` (Date → whole days) then `valueToColor` (days → green-to-red `hsl()` over the plant's `wateringIntervalDays`, or 10 days when it has none, using the `--status-lightness` CSS variable so it works in both themes). `wateringDue` turns the last watering and the interval into "Due in 3 days" / "Overdue by 2 days", or nothing for a plant without an interval.
 
 ## Styling and theming
 

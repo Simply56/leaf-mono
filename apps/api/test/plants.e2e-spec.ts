@@ -43,6 +43,8 @@ describe("/plants", () => {
                 name: "Monstera",
                 imagePath: DEFAULT_IMAGE_PATH,
                 lastWatered: null,
+
+                wateringIntervalDays: null,
             });
         });
 
@@ -67,6 +69,8 @@ describe("/plants", () => {
                 name: "Ficus",
                 imagePath: DEFAULT_IMAGE_PATH,
                 lastWatered: null,
+
+                wateringIntervalDays: null,
             });
         });
 
@@ -83,12 +87,16 @@ describe("/plants", () => {
                         name: "Aloe",
                         imagePath: DEFAULT_IMAGE_PATH,
                         lastWatered: null,
+
+                        wateringIntervalDays: null,
                     },
                     {
                         id: b.id,
                         name: "Begonia",
                         imagePath: DEFAULT_IMAGE_PATH,
                         lastWatered: null,
+
+                        wateringIntervalDays: null,
                     },
                 ]),
             );
@@ -125,6 +133,44 @@ describe("/plants", () => {
                 name: "New name",
                 imagePath: DEFAULT_IMAGE_PATH,
                 lastWatered: "2026-10-03T00:00:00.000Z",
+
+                wateringIntervalDays: null,
+            });
+        });
+
+        it("sets, keeps and clears the watering interval", async () => {
+            const created = await createPlant({
+                name: "Thirsty",
+                wateringIntervalDays: 7,
+            });
+            expect(created.wateringIntervalDays).toBe(7);
+
+            const renamed = await ctx
+                .request()
+                .patch(`/plants/${created.id}`)
+                .query(auth)
+                .send({ name: "Still thirsty" });
+            expect(renamed.status).toBe(200);
+            expect(renamed.body.wateringIntervalDays).toBe(7);
+
+            const changed = await ctx
+                .request()
+                .patch(`/plants/${created.id}`)
+                .query(auth)
+                .send({ wateringIntervalDays: 365 });
+            expect(changed.status).toBe(200);
+            expect((await getPlant(created.id)).wateringIntervalDays).toBe(365);
+
+            const cleared = await ctx
+                .request()
+                .patch(`/plants/${created.id}`)
+                .query(auth)
+                .send({ wateringIntervalDays: null });
+            expect(cleared.status).toBe(200);
+            expect(await getPlant(created.id)).toEqual({
+                ...created,
+                name: "Still thirsty",
+                wateringIntervalDays: null,
             });
         });
 
@@ -212,6 +258,22 @@ describe("/plants", () => {
                 { name: "Fern", lastWatered: "yesterday" },
             ],
             ["a non-string name", { name: 42 }],
+            [
+                "a watering interval of 0",
+                { name: "Fern", wateringIntervalDays: 0 },
+            ],
+            [
+                "a watering interval over 365 days",
+                { name: "Fern", wateringIntervalDays: 366 },
+            ],
+            [
+                "a fractional watering interval",
+                { name: "Fern", wateringIntervalDays: 1.5 },
+            ],
+            [
+                "a string watering interval",
+                { name: "Fern", wateringIntervalDays: "7" },
+            ],
             // The column is varchar(255), which SQLite does not enforce.
             ["a name over 255 characters", { name: "x".repeat(256) }],
             // Only the upload endpoint sets it. The path is also what gets

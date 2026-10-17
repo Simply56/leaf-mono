@@ -112,16 +112,24 @@ describe("application setup", () => {
                 );
             const propertiesOf = (schema: Schema) =>
                 Object.keys(schema.properties ?? {}).sort();
-            const plantProperties = ["id", "imagePath", "lastWatered", "name"];
+            const plantProperties = [
+                "id",
+                "imagePath",
+                "lastWatered",
+                "name",
+                "wateringIntervalDays",
+            ];
 
             expect(propertiesOf(bodyOf("/plants", "post"))).toEqual([
                 "lastWatered",
                 "name",
+                "wateringIntervalDays",
             ]);
             expect(bodyOf("/plants", "post").required).toEqual(["name"]);
             expect(propertiesOf(bodyOf("/plants/{id}", "patch"))).toEqual([
                 "lastWatered",
                 "name",
+                "wateringIntervalDays",
             ]);
             expect(bodyOf("/plants/{id}", "patch").required ?? []).toEqual([]);
 

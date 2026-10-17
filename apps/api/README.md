@@ -104,7 +104,8 @@ A plant looks like this:
   "id": 1,
   "name": "My Plant",
   "imagePath": "/static/defaultPlant.png",
-  "lastWatered": "2025-01-29T10:30:00.000Z"
+  "lastWatered": "2025-01-29T10:30:00.000Z",
+  "wateringIntervalDays": 7
 }
 ```
 
@@ -124,12 +125,14 @@ A plant looks like this:
 ```json
 {
   "name": "My Plant",
-  "lastWatered": "2025-01-29T10:30:00.000Z"
+  "lastWatered": "2025-01-29T10:30:00.000Z",
+  "wateringIntervalDays": 7
 }
 ```
 
 - `name`: string of at most 255 characters. Required when creating a plant.
 - `lastWatered`: ISO 8601 date (`2026-10-03`) or date-time (`2026-10-03T08:30:00Z`, `2026-10-03T10:30:00+02:00`), or `null` to clear it. To record a watering, `PATCH` the plant with the new date. Responses always give it as a UTC timestamp (`2026-10-03T08:30:00.000Z`), or `null`.
+- `wateringIntervalDays`: whole number of days between waterings, 1 to 365, or `null` for no interval (the default).
 - `imagePath` cannot be sent; only the image upload sets it.
 
 ### Upload a plant image
@@ -151,7 +154,8 @@ The response is the updated plant, with `imagePath` pointing at the stored file:
   "id": 1,
   "name": "My Plant",
   "imagePath": "/static/plant_1_1704067200000.jpg",
-  "lastWatered": "2025-01-29T10:30:00.000Z"
+  "lastWatered": "2025-01-29T10:30:00.000Z",
+  "wateringIntervalDays": 7
 }
 ```
 

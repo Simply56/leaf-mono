@@ -114,6 +114,15 @@ export class PlantsService {
         );
     }
 
+    setWateringInterval(plantId: number, days: number | null) {
+        this.mutate(
+            this.http.patch(this.buildUrl(`/plants/${plantId}`), {
+                wateringIntervalDays: days,
+            } satisfies UpdatePlantRequest),
+            "Could not save the watering interval.",
+        );
+    }
+
     deletePlant(plantId: number) {
         this.mutate(
             this.http.delete(this.buildUrl(`/plants/${plantId}`)),

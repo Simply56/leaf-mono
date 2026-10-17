@@ -17,4 +17,7 @@ export class Plant {
 
     @Column({ type: "datetime", nullable: true })
     lastWatered: Date | null;
+
+    @Column({ type: "integer", nullable: true })
+    wateringIntervalDays: number | null;
 }
