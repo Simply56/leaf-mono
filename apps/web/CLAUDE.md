@@ -1,12 +1,14 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in `apps/web`. Repository-wide notes are in the root `CLAUDE.md`.
 
 ## What this is
 
-Leaf (`leaf-ng`) is an Angular 22 PWA for tracking when houseplants were last watered. It is a frontend only: all data lives in a separate REST backend (the sibling `../leaf_api` Express server). This repo is one of several frontends for that same API (`../leaf-nest`, `../leaf-start`, `../Leaf`).
+Leaf (`leaf-ng`, workspace `web`) is an Angular 22 PWA for tracking when houseplants were last watered. It is a frontend only: all data lives in the NestJS REST API in `../api` (see `../api/README.md` for its endpoints).
 
 ## Commands
+
+Dependencies are installed once at the repository root (`npm install` there). Run these from `apps/web`, or from the root with `-w web` (e.g. `npm run lint -w web`):
 
 ```bash
 npm start              # ng serve, development config, http://localhost:4200
@@ -19,11 +21,9 @@ npm run deploy         # build + publish to GitHub Pages with --base-href=/leaf_
 
 There is no test suite, on purpose: no spec files, no test runner installed, and no `test` target in `angular.json`. Verify changes with `npm run lint`, `npm run format:check`, and `npm run build`.
 
-`nx.json` and `project.json` are also leftovers — Nx was removed and is not installed. Use the `ng` CLI / npm scripts, and treat `angular.json` as the source of truth for build config.
-
 ## Backend and auth
 
-- `src/app/environments/environments.ts` holds a hardcoded `useVps` flag that picks the API base URL: the deployed VPS (`true`, the committed default) or a local `leaf_api` at `http://127.0.0.1:3000` (`false`). There are no Angular `fileReplacements`; flip the flag by hand for local backend work and do not commit it flipped.
+- `src/app/environments/environments.ts` holds a hardcoded `useVps` flag that picks the API base URL: the deployed VPS (`true`, the committed default) or the api from `apps/api` running locally at `http://127.0.0.1:3000` (`false`; start it with `npm run dev:api` at the root). There are no Angular `fileReplacements`; flip the flag by hand for local backend work and do not commit it flipped.
 - Every request carries the API key as an `?apiKey=` query parameter (`PlantsService.buildUrl`). `AuthService.getApiKey()` resolves it in order: in-memory → `localStorage['apiKey']` → `?apiKey=` in the page URL (then persisted) → a blocking `window.prompt`. The resolved key is written onto the mutable `environment.apiKey`.
 - `imagePath` from the API is server-relative; the `parse` step of the plants resource in `PlantsService` prefixes it with `environment.url` and converts `lastWatered` strings to `Date`.
 
@@ -56,6 +56,8 @@ The "days since watered" display is two chained pipes: `computeWateredDaysAgo` (
 `InstallService` listens for the Chromium-only `beforeinstallprompt` event, and the root `App` template shows an install banner while one is pending and the user has not dismissed it (`localStorage['installDismissed']`). iOS never fires the event in any browser, so there the same banner shows the manual steps instead (Share → "Add to Home Screen") unless the app is already running standalone. Other browsers that never fire it (desktop Safari, Firefox) simply show no banner.
 
 The service worker (`ngsw-config.json`) is enabled only in production builds (`!isDevMode()`), so caching behavior cannot be reproduced under `npm start`. The app is served from the `/leaf_ng/` sub-path on GitHub Pages, so asset and manifest paths must stay relative (no leading `/`).
+
+`npm run deploy` publishes to the `gh-pages` branch of `Simply56/leaf_ng` through an explicit `--repo`, not to this repository's own remote. Keep it that way: deploying from another repository moves the site to a different URL and breaks every QR code already printed for a pot.
 
 ## Conventions
 

@@ -1,6 +1,6 @@
 # leaf-nest
 
-A small REST API for managing plants and tracking when they were last watered, built with NestJS, TypeORM and SQLite.
+A small REST API for managing plants and tracking when they were last watered, built with NestJS, TypeORM and SQLite. It is the `api` workspace of this repository; the Angular frontend that uses it is in `apps/web`.
 
 ## Features
 
@@ -17,12 +17,14 @@ A small REST API for managing plants and tracking when they were last watered, b
 
 ## Setup
 
+Dependencies are installed once, at the repository root:
+
 ```bash
-npm install
-cp .env.example .env
+npm install                                  # at the repository root
+cp apps/api/.env.example apps/api/.env
 ```
 
-Then set both values in `.env`:
+Then set both values in `apps/api/.env`:
 
 | Variable         | Purpose                                              |
 | ---------------- | ---------------------------------------------------- |
@@ -37,6 +39,8 @@ Optional environment variables:
 | `DATABASE_PATH` | `plants.db` | Location of the SQLite file  |
 
 ## Running the app
+
+The commands in this README run from `apps/api`. From the repository root, add `-w api` (e.g. `npm run start:dev -w api`, or the root shortcut `npm run dev:api`).
 
 ```bash
 # development
@@ -61,6 +65,8 @@ docker compose down            # stop
 ```
 
 The database and uploaded images are kept in the `db` and `uploads` named volumes, so they survive rebuilds. `docker compose down -v` deletes them.
+
+The image is built with the repository root as its context, because the lockfile lives there; `compose.yaml` sets that up. To build without compose, run `docker build -f apps/api/Dockerfile .` from the root.
 
 ## Tests
 
