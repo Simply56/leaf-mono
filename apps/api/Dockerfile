@@ -2,11 +2,13 @@
 FROM node:24-slim AS build
 WORKDIR /app
 
-# The lockfile covers both workspaces, so npm needs both manifests, but only
-# the api's dependencies are installed.
+# The lockfile covers every workspace, so npm needs all their manifests, but
+# only the api's dependencies are installed. The shared package comes in
+# whole: its `prepare` script builds it during the install.
 COPY package.json package-lock.json ./
 COPY apps/web/package.json apps/web/
 COPY apps/api/package.json apps/api/
+COPY packages/shared packages/shared
 RUN npm ci -w api
 
 COPY apps/api apps/api
@@ -19,6 +21,9 @@ WORKDIR /app
 
 COPY --from=build /app/apps/api/package.json ./
 COPY --from=build /app/node_modules ./node_modules
+# node_modules/@leaf/shared is a link to ../../packages/shared.
+COPY --from=build /app/packages/shared/package.json ./packages/shared/
+COPY --from=build /app/packages/shared/dist ./packages/shared/dist
 COPY --from=build /app/apps/api/dist ./dist
 COPY --chown=node:node apps/api/static ./static
 

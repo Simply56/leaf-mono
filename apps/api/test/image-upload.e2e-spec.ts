@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { auth, STATIC_DIR, useTestApp } from "./support/app";
+import { expectPlant } from "./support/contract";
 import { COMPRESSED_PREFIX, tinifyCalls } from "./support/tinify-mock";
 
 const DEFAULT_IMAGE_PATH = "/static/defaultPlant.png";
@@ -94,6 +95,7 @@ describe("POST /plants/:id/image", () => {
         const { res, file } = await upload(id, "photo.png");
 
         expect(res.status).toBe(201);
+        expectPlant(res.body);
         expect(res.body).toMatchObject({ id, name: "Photogenic" });
         expect(res.body.imagePath).toMatch(
             new RegExp(`^/static/plant_${id}_\\d+\\.png$`),

@@ -4,9 +4,25 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import tinify from "tinify";
+import type { CreatePlantRequest, UpdatePlantRequest } from "@leaf/shared";
 import type { Repository } from "typeorm";
-import type { CreatePlantDto, UpdatePlantDto } from "./dto/plant.dto";
 import { DEFAULT_PLANT_IMAGE_PATH, Plant } from "./entities/plant.entity";
+
+/**
+ * Request fields as entity columns. Dates arrive as ISO strings in whatever
+ * spelling the client used; as `Date`s, every response serializes them the
+ * same way (`toISOString()`), whether it comes from a write or a read.
+ */
+function toColumns(request: UpdatePlantRequest): Partial<Plant> {
+    const { lastWatered, ...rest } = request;
+    if (lastWatered === undefined) {
+        return rest;
+    }
+    return {
+        ...rest,
+        lastWatered: lastWatered === null ? null : new Date(lastWatered),
+    };
+}
 
 @Injectable()
 export class PlantsService {
@@ -18,8 +34,8 @@ export class PlantsService {
         tinify.key = config.getOrThrow<string>("TINIFY_API_KEY");
     }
 
-    async create(createPlantDto: CreatePlantDto): Promise<Plant> {
-        const plant = this.plantRepository.create(createPlantDto);
+    async create(request: CreatePlantRequest): Promise<Plant> {
+        const plant = this.plantRepository.create(toColumns(request));
         return await this.plantRepository.save(plant);
     }
 
@@ -35,9 +51,9 @@ export class PlantsService {
         return plant;
     }
 
-    async update(id: number, updatePlantDto: UpdatePlantDto): Promise<Plant> {
+    async update(id: number, request: UpdatePlantRequest): Promise<Plant> {
         const plant = await this.findOne(id);
-        Object.assign(plant, updatePlantDto);
+        Object.assign(plant, toColumns(request));
         return await this.plantRepository.save(plant);
     }
 

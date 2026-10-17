@@ -54,6 +54,73 @@ describe("application setup", () => {
             expect(methodsOf("/plants/{id}/image")).toEqual(["post"]);
         });
 
+        it("documents the plant request bodies and responses", async () => {
+            const doc = (await ctx.request().get("/api-json")).body;
+            type Schema = {
+                $ref?: string;
+                type?: string;
+                items?: Schema;
+                properties?: Record<string, unknown>;
+                required?: string[];
+            };
+            // Inline schemas and `$ref`s to components are both fine.
+            const resolve = (schema: Schema): Schema =>
+                schema.$ref
+                    ? resolve(
+                          doc.components.schemas[
+                              schema.$ref.replace("#/components/schemas/", "")
+                          ],
+                      )
+                    : schema;
+            const bodyOf = (route: string, method: string): Schema =>
+                resolve(
+                    doc.paths[route][method].requestBody.content[
+                        "application/json"
+                    ].schema,
+                );
+            const responseOf = (
+                route: string,
+                method: string,
+                status: string,
+            ): Schema =>
+                resolve(
+                    doc.paths[route][method].responses[status].content[
+                        "application/json"
+                    ].schema,
+                );
+            const propertiesOf = (schema: Schema) =>
+                Object.keys(schema.properties ?? {}).sort();
+            const plantProperties = ["id", "imagePath", "lastWatered", "name"];
+
+            expect(propertiesOf(bodyOf("/plants", "post"))).toEqual([
+                "lastWatered",
+                "name",
+            ]);
+            expect(bodyOf("/plants", "post").required).toEqual(["name"]);
+            expect(propertiesOf(bodyOf("/plants/{id}", "patch"))).toEqual([
+                "lastWatered",
+                "name",
+            ]);
+            expect(bodyOf("/plants/{id}", "patch").required ?? []).toEqual([]);
+
+            expect(propertiesOf(responseOf("/plants", "post", "201"))).toEqual(
+                plantProperties,
+            );
+            const list = responseOf("/plants", "get", "200");
+            expect(list.type).toBe("array");
+            expect(propertiesOf(resolve(list.items as Schema))).toEqual(
+                plantProperties,
+            );
+            for (const method of ["get", "patch"]) {
+                expect(
+                    propertiesOf(responseOf("/plants/{id}", method, "200")),
+                ).toEqual(plantProperties);
+            }
+            expect(
+                propertiesOf(responseOf("/plants/{id}/image", "post", "201")),
+            ).toEqual(plantProperties);
+        });
+
         it("serves the Swagger UI at /api", async () => {
             const res = await ctx.request().get("/api");
 

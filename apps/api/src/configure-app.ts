@@ -1,5 +1,4 @@
 import { join } from "node:path";
-import { ValidationPipe } from "@nestjs/common";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
@@ -13,13 +12,8 @@ export function configureApp(app: NestExpressApplication): void {
         origin: "*",
     });
 
-    app.useGlobalPipes(
-        new ValidationPipe({
-            whitelist: true,
-            forbidNonWhitelisted: true,
-            transform: true,
-        }),
-    );
+    // Request bodies are validated per route against the shared schemas
+    // (ZodValidationPipe); route parameters use Nest's own pipes.
 
     // Serve static files from the 'static' directory
     app.useStaticAssets(join(__dirname, "..", "static"), {

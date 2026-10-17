@@ -15,6 +15,7 @@
         "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch"
     },
     "dependencies": {
+        "@leaf/shared": "*",
         "@nestjs/common": "^12.0.0",
         "@nestjs/config": "^12.0.0",
         "@nestjs/core": "^12.0.0",
@@ -22,12 +23,11 @@
         "@nestjs/swagger": "^12.0.0",
         "@nestjs/typeorm": "^12.0.2",
         "better-sqlite3": "^12.11.1",
-        "class-transformer": "^0.5.1",
-        "class-validator": "^0.15.1",
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.2",
         "tinify": "^1.8.2",
-        "typeorm": "^1.1.2"
+        "typeorm": "^1.1.2",
+        "zod": "^4.6.6"
     },
     "devDependencies": {
         "@nestjs/cli": "^12.0.0",

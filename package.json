@@ -2,12 +2,15 @@
     "name": "leaf-ng-nest-mono",
     "private": true,
     "workspaces": [
+        "packages/*",
         "apps/*"
     ],
     "scripts": {
         "dev:web": "npm start -w web",
         "dev:api": "npm run start:dev -w api",
-        "build": "npm run build --workspaces",
+        "dev:shared": "npm run watch -w @leaf/shared",
+        "build": "npm run build -w @leaf/shared && npm run build -w web -w api",
+        "build:shared": "npm run build -w @leaf/shared",
         "build:web": "npm run build -w web",
         "build:api": "npm run build -w api",
         "test": "npm test -w api",

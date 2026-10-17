@@ -13,14 +13,23 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { ApiKeyGuard } from "../auth/api-key.guard";
 import {
-    CreatePlantDto,
-    UpdatePlantDto,
-    UploadImageDto,
-} from "./dto/plant.dto";
+    type CreatePlantRequest,
+    CreatePlantRequestSchema,
+    type UpdatePlantRequest,
+    UpdatePlantRequestSchema,
+} from "@leaf/shared";
+import {
+    ApiBody,
+    ApiConsumes,
+    ApiCreatedResponse,
+    ApiOkResponse,
+    ApiTags,
+} from "@nestjs/swagger";
+import { ApiKeyGuard } from "../auth/api-key.guard";
+import { ZodValidationPipe } from "../validation/zod-validation.pipe";
 import type { Plant } from "./entities/plant.entity";
+import { plantSchemas } from "./plants.openapi";
 import { PlantsService } from "./plants.service";
 
 @ApiTags("plants")
@@ -30,26 +39,36 @@ export class PlantsController {
     constructor(private readonly plantsService: PlantsService) {}
 
     @Post()
-    create(@Body() createPlantDto: CreatePlantDto): Promise<Plant> {
-        return this.plantsService.create(createPlantDto);
+    @ApiBody({ schema: plantSchemas.createBody })
+    @ApiCreatedResponse({ schema: plantSchemas.plant })
+    create(
+        @Body(new ZodValidationPipe(CreatePlantRequestSchema))
+        body: CreatePlantRequest,
+    ): Promise<Plant> {
+        return this.plantsService.create(body);
     }
 
     @Get()
+    @ApiOkResponse({ schema: plantSchemas.plantList })
     findAll(): Promise<Plant[]> {
         return this.plantsService.findAll();
     }
 
     @Get(":id")
+    @ApiOkResponse({ schema: plantSchemas.plant })
     findOne(@Param("id", ParseIntPipe) id: number): Promise<Plant> {
         return this.plantsService.findOne(id);
     }
 
     @Patch(":id")
+    @ApiBody({ schema: plantSchemas.updateBody })
+    @ApiOkResponse({ schema: plantSchemas.plant })
     update(
         @Param("id", ParseIntPipe) id: number,
-        @Body() updatePlantDto: UpdatePlantDto,
+        @Body(new ZodValidationPipe(UpdatePlantRequestSchema))
+        body: UpdatePlantRequest,
     ): Promise<Plant> {
-        return this.plantsService.update(id, updatePlantDto);
+        return this.plantsService.update(id, body);
     }
 
     @Delete(":id")
@@ -59,7 +78,8 @@ export class PlantsController {
 
     @Post(":id/image")
     @ApiConsumes("multipart/form-data")
-    @ApiBody({ description: "Image upload payload", type: UploadImageDto })
+    @ApiBody({ schema: plantSchemas.imageUploadBody })
+    @ApiCreatedResponse({ schema: plantSchemas.plant })
     @UseInterceptors(
         FileInterceptor("image", {
             storage: undefined, // Use memory storage
