@@ -1,63 +1,32 @@
-<button
-    class="theme-toggle"
-    (click)="theme.toggle()"
-    [attr.aria-label]="
-        theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'
-    "
-    [title]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
->
-    @if (theme.isDark()) {
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="4" />
-            <path
-                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-            />
-        </svg>
-    } @else {
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
-    }
-</button>
+@if (auth.key() == null) {
+    <app-api-key />
+} @else {
+    <router-outlet />
+}
+
 @if (plants.error(); as message) {
     <div class="error-banner" role="alert">
         <span>{{ message }}</span>
+        <button class="error-retry" (click)="plants.reload()">Try again</button>
         <button
-            class="error-dismiss"
+            class="icon-button error-dismiss"
             (click)="plants.error.set(null)"
             aria-label="Dismiss error"
         >
-            ✕
+            <app-icon name="close" />
         </button>
     </div>
 }
-@if (installer.canInstall() || installer.showManualSteps()) {
-    <div class="install-banner">
-        @if (installer.canInstall()) {
-            <span>Install Leaf for quick access from your home screen.</span>
-        } @else {
-            <span>
-                Install Leaf: tap Share
-                <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                        d="M12 3v12M8 7l4-4 4 4M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"
-                    />
-                </svg>
-                then “Add to Home Screen”.
-            </span>
-        }
-        <div class="install-actions">
-            @if (installer.canInstall()) {
-                <button (click)="installer.install()">Install</button>
+
+<div class="toast-region" role="status" aria-live="polite">
+    @if (toasts.toast(); as toast) {
+        <div class="toast">
+            <span>{{ toast.message }}</span>
+            @if (toast.action; as action) {
+                <button class="toast-action" (click)="toasts.runAction()">
+                    {{ action.label }}
+                </button>
             }
-            <button
-                class="install-dismiss"
-                (click)="installer.dismiss()"
-                aria-label="Dismiss install banner"
-            >
-                ✕
-            </button>
         </div>
-    </div>
-}
-<router-outlet />
+    }
+</div>

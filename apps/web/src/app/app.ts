@@ -1,18 +1,19 @@
 import { Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { InstallService } from "./services/install-service";
+import { ApiKey } from "./components/api-key/api-key";
+import { Icon } from "./components/icon/icon";
+import { AuthService } from "./services/auth-service";
 import { PlantsService } from "./services/plants-service";
-import { ThemeService } from "./services/theme-service";
+import { ToastService } from "./services/toast-service";
 
 @Component({
     selector: "app-root",
-    imports: [RouterOutlet],
+    imports: [RouterOutlet, ApiKey, Icon],
     templateUrl: "./app.html",
     styleUrl: "./app.css",
 })
 export class App {
-    protected title = "Leaf";
-    protected theme = inject(ThemeService);
+    protected auth = inject(AuthService);
     protected plants = inject(PlantsService);
-    protected installer = inject(InstallService);
+    protected toasts = inject(ToastService);
 }

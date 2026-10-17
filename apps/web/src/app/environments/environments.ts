@@ -3,5 +3,4 @@
 // `fileReplacements` in angular.json.
 export const environment = {
     url: "https://msrsen.mooo.com",
-    apiKey: null as string | null,
 };

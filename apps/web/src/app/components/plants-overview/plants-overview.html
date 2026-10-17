@@ -1,18 +1,82 @@
-<h1>L.E.A.F.</h1>
-<app-create-plant />
+<header class="top-bar">
+    <p class="wordmark"><app-icon name="leaf" /> Leaf</p>
+    <button
+        class="icon-button"
+        (click)="theme.toggle()"
+        [attr.aria-label]="
+            theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'
+        "
+    >
+        <app-icon [name]="theme.isDark() ? 'sun' : 'moon'" />
+    </button>
+</header>
 
-@let plants = service.plants();
-<div class="plants-list">
-    @if (plants.length > 0) {
-        @for (plant of plants; track plant.id) {
-            <app-plant-quick-info [plant]="plant" />
+<main class="page home">
+    @if (!service.loaded()) {
+        @if (service.loading()) {
+            <div
+                class="spinner"
+                role="status"
+                aria-label="Loading plants"
+            ></div>
         }
+    } @else if (entries().length === 0) {
+        <div class="empty-state">
+            <h1 class="page-title">No plants yet</h1>
+            <p class="muted">
+                Add the plants you look after, and Leaf shows which ones need
+                water.
+            </p>
+            <button class="primary-button" (click)="createPlant.open()">
+                <app-icon name="plus" /> Add your first plant
+            </button>
+        </div>
     } @else {
-        <p>No plants added yet.</p>
+        <h1 class="summary">{{ headline() }}</h1>
+        <ul class="plant-list">
+            @for (entry of entries(); track entry.plant.id) {
+                <li>
+                    <app-plant-quick-info
+                        [plant]="entry.plant"
+                        [status]="entry.status"
+                    />
+                </li>
+            }
+        </ul>
     }
-</div>
-@if (service.loading()) {
-    <div class="spinner-overlay">
-        <div class="spinner"></div>
-    </div>
+
+    @if (installer.canInstall() || installer.showManualSteps()) {
+        <aside class="install-banner">
+            @if (installer.canInstall()) {
+                <p>Install Leaf to open it from your home screen.</p>
+            } @else {
+                <p>
+                    To install Leaf, tap Share
+                    <app-icon name="share" class="inline-icon" />
+                    and then “Add to Home Screen”.
+                </p>
+            }
+            <div class="install-actions">
+                @if (installer.canInstall()) {
+                    <button class="tonal-button" (click)="installer.install()">
+                        Install
+                    </button>
+                }
+                <button
+                    class="icon-button"
+                    (click)="installer.dismiss()"
+                    aria-label="Dismiss install tip"
+                >
+                    <app-icon name="close" />
+                </button>
+            </div>
+        </aside>
+    }
+</main>
+
+@if (entries().length > 0) {
+    <button class="fab" (click)="createPlant.open()" aria-label="Add a plant">
+        <app-icon name="plus" />
+    </button>
 }
+<app-create-plant #createPlant />

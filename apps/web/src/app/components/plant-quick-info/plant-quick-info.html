@@ -1,24 +1,26 @@
-<div class="plant-card">
-    <app-plant-image [plant]="plant" />
-    <h3>{{ plant.name }}</h3>
-    @if (plant.lastWatered != null) {
-        <p>
-            Days since last watering:
-            <span
-                [style.color]="
-                    plant.lastWatered
-                        | computeWateredDaysAgo
-                        | valueToColor: plant.wateringIntervalDays ?? 10
-                "
-                >{{ plant.lastWatered | computeWateredDaysAgo }}
-            </span>
-        </p>
-        @let due = plant.lastWatered | wateringDue: plant.wateringIntervalDays;
-        @if (due != null) {
-            <p>{{ due }}</p>
-        }
+<div class="plant-row" [class]="'tone-' + status.tone">
+    <a class="plant-row-link" [routerLink]="['plant', plant.id]">
+        <span class="water-ring" [style.--level]="status.level">
+            <img [src]="plant.imagePath" alt="" loading="lazy" />
+        </span>
+        <span class="plant-row-text">
+            <span class="plant-row-name">{{ plant.name }}</span>
+            <span class="status-text">{{ status.label }}</span>
+        </span>
+    </a>
+    @if (status.daysSince === 0) {
+        <span class="watered-mark" title="Watered today">
+            <app-icon name="check" />
+            <span class="visually-hidden">Watered today</span>
+        </span>
     } @else {
-        <p>Never watered</p>
+        <button
+            class="water-chip"
+            [disabled]="pending()"
+            (click)="water()"
+            [attr.aria-label]="'Water ' + plant.name"
+        >
+            <app-icon name="droplet" /> Water
+        </button>
     }
-    <button [routerLink]="['plant', plant.id]">View Details</button>
 </div>

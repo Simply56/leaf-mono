@@ -1,89 +1,86 @@
-/* Sits in the page's top-right corner and scrolls away with the content;
-   colors, radius and hover come from the global button styles */
-.theme-toggle {
-    position: absolute;
-    top: var(--spacing-unit);
-    right: var(--spacing-unit);
-    margin: 0;
-    padding: calc(var(--spacing-unit) * 0.5);
-    line-height: 0;
-}
-
-.theme-toggle svg,
-.share-icon {
-    width: 1.25em;
-    height: 1.25em;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.share-icon {
-    vertical-align: text-bottom;
-}
-
-.error-banner,
-.install-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-unit);
-    max-width: min(var(--container-width), calc(100% - 7rem));
-    margin: var(--spacing-unit) auto;
-    padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px var(--shadow);
-}
-
+/* Floats over the top bar until dismissed, clear of the notch */
 .error-banner {
-    background-color: #dc3545;
-    color: white;
-}
-
-.install-banner {
-    background-color: var(--card-background);
-    border: 1px solid var(--border-color);
-}
-
-.install-actions {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 0.5rem);
+    left: 0.75rem;
+    right: 0.75rem;
+    z-index: 30;
     display: flex;
     align-items: center;
-    gap: calc(var(--spacing-unit) * 0.5);
-    flex-shrink: 0;
+    gap: 0.5rem;
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-radius: var(--radius-m);
+    background: var(--danger);
+    color: var(--on-danger);
+    box-shadow: var(--shadow-raised);
 }
 
-.install-actions button {
-    margin: 0;
+.error-banner span {
+    flex: 1;
 }
 
-.install-dismiss {
-    padding: 0.25rem 0.5rem;
-    background: transparent;
-    color: inherit;
-    line-height: 1;
-}
-
-.install-dismiss:hover {
-    background-color: var(--muted-background);
+.error-retry {
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-s);
+    font-weight: 600;
+    text-decoration: underline;
 }
 
 .error-dismiss {
-    margin: 0;
-    padding: 0.25rem 0.5rem;
-    background: transparent;
-    line-height: 1;
+    color: inherit;
 }
 
-.error-dismiss:hover {
-    background-color: rgba(0, 0, 0, 0.15);
+/* Bottom of the screen, above the home indicator; covers the add button while shown */
+.toast-region {
+    position: fixed;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 32rem;
+    min-height: 3.25rem;
+    padding: 0.375rem 0.375rem 0.375rem 1rem;
+    border-radius: var(--radius-m);
+    background: var(--inverse-surface);
+    color: var(--on-inverse-surface);
+    box-shadow: var(--shadow-raised);
+    pointer-events: auto;
+}
+
+.toast span {
+    flex: 1;
+}
+
+.toast-action {
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-radius: var(--radius-s);
+    color: var(--inverse-accent);
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .toast {
+        animation: rise 0.2s ease-out;
+    }
 }
 
 @media print {
     .error-banner,
-    .install-banner,
-    .theme-toggle {
+    .toast-region {
         display: none;
     }
 }

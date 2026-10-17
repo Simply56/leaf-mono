@@ -1,8 +1,15 @@
-import { computed, Injectable, signal } from "@angular/core";
+import { computed, effect, Injectable, signal } from "@angular/core";
 
 type Theme = "light" | "dark";
 
 const STORAGE_KEY = "theme";
+
+// The page background of each theme (--bg in styles.css), for the browser's
+// and the installed app's status bar. index.html sets the same values.
+const THEME_COLORS: Record<Theme, string> = {
+    light: "#eef3ee",
+    dark: "#101612",
+};
 
 @Injectable({
     providedIn: "root",
@@ -20,6 +27,14 @@ export class ThemeService {
         const query = window.matchMedia("(prefers-color-scheme: dark)");
         this.systemDark.set(query.matches);
         query.addEventListener("change", (e) => this.systemDark.set(e.matches));
+        effect(() => {
+            const color = THEME_COLORS[this.isDark() ? "dark" : "light"];
+            for (const meta of document.querySelectorAll(
+                'meta[name="theme-color"]',
+            )) {
+                meta.setAttribute("content", color);
+            }
+        });
     }
 
     toggle(): void {

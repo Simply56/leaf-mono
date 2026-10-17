@@ -1,0 +1,32 @@
+<main class="page key-page">
+    <p class="wordmark"><app-icon name="leaf" /> Leaf</p>
+    <h1 class="page-title">Enter your key</h1>
+    <p class="muted">
+        Leaf needs the key for your plant server. You only enter it once on this
+        device.
+    </p>
+    <form
+        class="stack"
+        (submit)="$event.preventDefault(); save(keyInput.value)"
+    >
+        <label class="field-label" for="api-key">Key</label>
+        <input
+            #keyInput
+            id="api-key"
+            class="text-input"
+            type="password"
+            autocomplete="current-password"
+            autocapitalize="off"
+            spellcheck="false"
+            required
+            [attr.aria-invalid]="auth.rejected() || null"
+            [attr.aria-describedby]="auth.rejected() ? 'api-key-error' : null"
+        />
+        @if (auth.rejected()) {
+            <p id="api-key-error" class="field-error">
+                That key was not accepted. Check it and try again.
+            </p>
+        }
+        <button type="submit" class="primary-button">Continue</button>
+    </form>
+</main>

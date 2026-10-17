@@ -1,14 +1,31 @@
-<div class="add-plant">
-    <h2>Add New Plant</h2>
-    <div class="createPlant">
+<dialog
+    #dialog
+    class="dialog"
+    aria-labelledby="create-plant-title"
+    closedby="any"
+>
+    <form
+        class="stack"
+        (submit)="$event.preventDefault(); submit(nameInput.value)"
+    >
+        <h2 id="create-plant-title" class="dialog-title">Add a plant</h2>
+        <label class="field-label" for="create-plant-name">Name</label>
         <input
-            #createPlantInput
+            #nameInput
+            id="create-plant-name"
+            class="text-input"
             type="text"
-            placeholder="Plant Name"
+            maxlength="255"
+            autocomplete="off"
             required
         />
-        <button (click)="service.addPlant(createPlantInput.value)">
-            Add Plant
-        </button>
-    </div>
-</div>
+        <div class="dialog-actions">
+            <button type="button" class="text-button" (click)="close()">
+                Cancel
+            </button>
+            <button type="submit" class="primary-button" [disabled]="saving()">
+                Add plant
+            </button>
+        </div>
+    </form>
+</dialog>

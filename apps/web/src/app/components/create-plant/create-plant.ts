@@ -1,12 +1,43 @@
-import { Component, inject } from "@angular/core";
+import {
+    Component,
+    ElementRef,
+    inject,
+    signal,
+    viewChild,
+} from "@angular/core";
 import { PlantsService } from "../../services/plants-service";
+import { ToastService } from "../../services/toast-service";
 
 @Component({
     selector: "app-create-plant",
-    imports: [],
     templateUrl: "./create-plant.html",
-    styleUrl: "./create-plant.css",
 })
 export class CreatePlant {
-    service: PlantsService = inject(PlantsService);
+    service = inject(PlantsService);
+    toast = inject(ToastService);
+    dialog = viewChild.required<ElementRef<HTMLDialogElement>>("dialog");
+    nameInput = viewChild.required<ElementRef<HTMLInputElement>>("nameInput");
+    saving = signal(false);
+
+    open() {
+        this.nameInput().nativeElement.value = "";
+        this.dialog().nativeElement.showModal();
+        this.nameInput().nativeElement.focus();
+    }
+
+    close() {
+        this.dialog().nativeElement.close();
+    }
+
+    async submit(name: string) {
+        const trimmed = name.trim();
+        if (trimmed === "") return;
+        this.saving.set(true);
+        const ok = await this.service.addPlant(trimmed);
+        this.saving.set(false);
+        if (ok) {
+            this.close();
+            this.toast.show(`Added ${trimmed}`);
+        }
+    }
 }

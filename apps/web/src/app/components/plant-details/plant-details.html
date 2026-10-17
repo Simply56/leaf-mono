@@ -1,90 +1,211 @@
 @let p = plant();
 @if (p != null) {
-    <div class="plant-status">
-        <h1
-            #plantNameHeading
-            id="plant_title"
-            contenteditable="true"
-            (keypress)="renamePlant($event)"
+    @let s = status()!;
+    <header class="top-bar">
+        <a class="icon-button" routerLink="/" aria-label="Back to all plants">
+            <app-icon name="chevron-left" />
+        </a>
+        <h1 class="top-bar-title">{{ p.name }}</h1>
+        <button
+            class="icon-button"
+            (click)="openRename()"
+            aria-label="Rename plant"
         >
-            {{ p.name }}
-        </h1>
+            <app-icon name="pencil" />
+        </button>
+    </header>
 
+    <main class="page detail">
         <app-plant-image [plant]="p" />
 
-        <div class="watering-info">
-            @if (p.lastWatered == null) {
-                <p>This plant has never been watered.</p>
-            } @else {
-                <p>Last watered: {{ p.lastWatered | date: "fullDate" }}</p>
+        <section
+            class="panel status-panel"
+            [class]="'tone-' + s.tone"
+            aria-label="Watering"
+        >
+            <p class="status-headline">{{ s.label }}</p>
+            <p class="muted">
+                @if (p.lastWatered == null) {
+                    Log the first watering to start tracking it.
+                } @else if (p.wateringIntervalDays == null) {
+                    Last watered {{ p.lastWatered | date: "EEEE, d MMMM" }}
+                } @else {
+                    Last watered {{ p.lastWatered | date: "EEEE, d MMMM" }},
+                    {{
+                        s.daysSince === 0
+                            ? "today"
+                            : s.daysSince === 1
+                              ? "yesterday"
+                              : s.daysSince + " days ago"
+                    }}
+                }
+            </p>
 
-                <p>
-                    Days since last watering:
-                    <span
-                        [style.color]="
-                            p.lastWatered
-                                | computeWateredDaysAgo
-                                | valueToColor: p.wateringIntervalDays ?? 10
+            <button
+                class="water-button"
+                [disabled]="watering()"
+                (click)="water(null)"
+            >
+                <app-icon name="droplet" /> Water today
+            </button>
+
+            @if (!pickingDate()) {
+                <button class="text-button" (click)="pickingDate.set(true)">
+                    Pick another day
+                </button>
+            } @else {
+                <form
+                    class="date-row"
+                    (submit)="$event.preventDefault(); water(dateInput.value)"
+                >
+                    <label class="field-label" for="watered-on"
+                        >Watered on</label
+                    >
+                    <input
+                        #dateInput
+                        id="watered-on"
+                        class="text-input"
+                        type="date"
+                        required
+                        [max]="today()"
+                        [value]="yesterday()"
+                    />
+                    <div class="date-row-actions">
+                        <button
+                            type="button"
+                            class="text-button"
+                            (click)="pickingDate.set(false)"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="tonal-button"
+                            [disabled]="watering()"
+                        >
+                            Log watering
+                        </button>
+                    </div>
+                </form>
+            }
+        </section>
+
+        <section class="panel">
+            <form
+                (submit)="$event.preventDefault(); saveInterval()"
+                class="interval-form"
+            >
+                <label class="field-label" for="interval-input"
+                    >Water every</label
+                >
+                <div class="interval-row">
+                    <input
+                        id="interval-input"
+                        class="text-input interval-input"
+                        type="number"
+                        inputmode="numeric"
+                        min="1"
+                        max="365"
+                        step="1"
+                        aria-describedby="interval-hint"
+                        [(ngModel)]="intervalDays"
+                        name="intervalDays"
+                    />
+                    <span>days</span>
+                    <button
+                        type="submit"
+                        class="tonal-button"
+                        [disabled]="
+                            !intervalValid() ||
+                            intervalDays() === p.wateringIntervalDays
                         "
                     >
-                        {{ p.lastWatered | computeWateredDaysAgo }}
-                    </span>
-                </p>
-                @let due = p.lastWatered | wateringDue: p.wateringIntervalDays;
-                @if (due != null) {
-                    <p>{{ due }}</p>
-                }
-            }
-        </div>
-
-        <div class="interval-picker">
-            <label for="interval-input">Water every</label>
-            <div class="interval-row">
-                <input
-                    id="interval-input"
-                    type="number"
-                    inputmode="numeric"
-                    min="1"
-                    max="365"
-                    step="1"
-                    placeholder="–"
-                    [(ngModel)]="intervalDays"
-                />
-                <span>days</span>
-                <button
-                    (click)="saveInterval()"
-                    [disabled]="
-                        !intervalValid() ||
-                        intervalDays() === p.wateringIntervalDays
-                    "
-                >
-                    Save
-                </button>
-                @if (p.wateringIntervalDays != null) {
-                    <button class="interval-clear" (click)="clearInterval()">
-                        Clear
+                        Save
                     </button>
-                }
+                    @if (p.wateringIntervalDays != null) {
+                        <button
+                            type="button"
+                            class="text-button"
+                            (click)="clearInterval()"
+                        >
+                            Clear
+                        </button>
+                    }
+                </div>
+                <p id="interval-hint" class="hint">
+                    @if (p.wateringIntervalDays == null) {
+                        Without an interval, a plant needs water after
+                        {{ defaultInterval }} days.
+                    } @else {
+                        Leaf shows when the next watering is due.
+                    }
+                </p>
+            </form>
+        </section>
+
+        <button class="danger-text-button" (click)="openDelete()">
+            Delete plant
+        </button>
+    </main>
+
+    <dialog
+        #renameDialog
+        class="dialog"
+        aria-labelledby="rename-title"
+        closedby="any"
+    >
+        <form
+            class="stack"
+            (submit)="$event.preventDefault(); rename(renameInput.value)"
+        >
+            <h2 id="rename-title" class="dialog-title">Rename plant</h2>
+            <label class="field-label" for="rename-input">Name</label>
+            <input
+                #renameInput
+                id="rename-input"
+                class="text-input"
+                type="text"
+                maxlength="255"
+                autocomplete="off"
+                required
+            />
+            <div class="dialog-actions">
+                <button
+                    type="button"
+                    class="text-button"
+                    (click)="renameDialog.close()"
+                >
+                    Cancel
+                </button>
+                <button type="submit" class="primary-button">Save</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog
+        #deleteDialog
+        class="dialog"
+        aria-labelledby="delete-title"
+        aria-describedby="delete-description"
+        closedby="any"
+    >
+        <div class="stack">
+            <h2 id="delete-title" class="dialog-title">Delete {{ p.name }}?</h2>
+            <p id="delete-description" class="muted">
+                This removes the plant, its photo and its watering history.
+            </p>
+            <div class="dialog-actions">
+                <button
+                    type="button"
+                    class="text-button"
+                    (click)="deleteDialog.close()"
+                >
+                    Cancel
+                </button>
+                <button type="button" class="danger-button" (click)="delete()">
+                    Delete
+                </button>
             </div>
         </div>
-
-        <div>
-            <div class="datetime-picker">
-                <label
-                    >When did you water this plant?
-                    <input type="date" [(ngModel)]="selectedDate" />
-                </label>
-            </div>
-            <button class="water-button" (click)="waterPlant()">
-                Log Watering
-            </button>
-        </div>
-
-        <div class="button-container">
-            <button routerLink="">Back to Plants</button>
-            <button class="button delete-button" (click)="deletePlant()">
-                Delete {{ p.name }}
-            </button>
-        </div>
-    </div>
+    </dialog>
 }

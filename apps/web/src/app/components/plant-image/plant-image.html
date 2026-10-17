@@ -1,23 +1,19 @@
-<input
-    #imageInput
-    style="display: none"
-    type="file"
-    id="imageInput"
-    name="image"
-    accept="image/*"
-    (change)="updateImage()"
-/>
-
-<img
-    [src]="plant.imagePath"
-    [alt]="plant.name"
-    class="plant-detail-image"
-    role="button"
-    tabindex="0"
-    [attr.aria-label]="'Change the image of ' + plant.name"
-    (click)="imageInput.click()"
-    (keydown.enter)="imageInput.click()"
-    (keydown.space)="$event.preventDefault(); imageInput.click()"
-    style="cursor: pointer"
-    title="Click to change image"
-/>
+<div class="photo" [class.uploading]="uploading()">
+    <img [src]="displaySrc()" [alt]="plant().name" />
+    @if (uploading()) {
+        <div class="photo-progress" role="status">
+            <span class="spinner small"></span>
+            <span class="visually-hidden">Uploading photo</span>
+        </div>
+    }
+    <label class="photo-button">
+        <input
+            class="visually-hidden"
+            type="file"
+            accept="image/*"
+            [disabled]="uploading()"
+            (change)="onFileChosen($event)"
+        />
+        <app-icon name="camera" /> Change photo
+    </label>
+</div>
