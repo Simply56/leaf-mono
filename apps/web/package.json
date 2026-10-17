@@ -6,21 +6,7 @@
         "start": "ng serve",
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
-        "deploy": "ng deploy --base-href=/leaf_ng/ --repo=git@github.com:Simply56/leaf_ng.git",
-        "lint": "eslint src",
-        "lint:fix": "eslint src --fix",
-        "format": "prettier --write \"src/**/*.{ts,html,css,json}\"",
-        "format:check": "prettier --check \"src/**/*.{ts,html,css,json}\""
-    },
-    "prettier": {
-        "overrides": [
-            {
-                "files": "*.html",
-                "options": {
-                    "parser": "angular"
-                }
-            }
-        ]
+        "deploy": "ng deploy --base-href=/leaf_ng/ --repo=git@github.com:Simply56/leaf_ng.git"
     },
     "private": true,
     "dependencies": {
@@ -43,8 +29,6 @@
         "@angular/language-server": "^22.2.1",
         "@schematics/angular": "^22.2.1",
         "angular-cli-ghpages": "^3.1.0",
-        "prettier": "^3.8.1",
-        "typescript": "^6.0.3",
-        "typescript-eslint": "^8.71.0"
+        "typescript": "^6.0.3"
     }
 }

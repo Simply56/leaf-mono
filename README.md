@@ -27,10 +27,13 @@ Run from the repository root:
 | `npm run dev:web`   | Angular dev server on http://localhost:4200      |
 | `npm run dev:api`   | API in watch mode on http://localhost:3000       |
 | `npm run build`     | Build both apps (`build:web` / `build:api` for one) |
-| `npm run lint`      | Lint both apps                                   |
 | `npm test`          | API test suite (the web app has no tests)        |
+| `npm run lint`      | ESLint over the whole repository (`lint:fix` to autofix) |
+| `npm run format`    | Prettier over the whole repository (`format:check` to verify) |
 
-Any other script of an app runs with `-w <workspace>`, e.g. `npm run format:check -w web`, or from inside the app's folder.
+Any other script of an app runs with `-w <workspace>`, e.g. `npm run start:prod -w api`, or from inside the app's folder.
+
+Both apps share one ESLint and one Prettier configuration at the root: 4-space indentation and double quotes everywhere.
 
 The web app talks to the deployed API by default. To use a local API, see "Backend and auth" in `apps/web/CLAUDE.md`.
 

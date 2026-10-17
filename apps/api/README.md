@@ -78,9 +78,11 @@ The suite boots the real application and exercises it over HTTP against a tempor
 
 ## Linting and formatting
 
+ESLint and Prettier are configured once for the whole repository; run them from the repository root:
+
 ```bash
-npm run lint
-npm run format
+npm run lint           # lint:fix to autofix
+npm run format         # format:check to verify
 ```
 
 ## Authentication

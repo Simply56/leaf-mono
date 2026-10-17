@@ -10,8 +10,16 @@
         "build": "npm run build --workspaces",
         "build:web": "npm run build -w web",
         "build:api": "npm run build -w api",
-        "lint": "npm run lint --workspaces",
-        "test": "npm test -w api"
+        "test": "npm test -w api",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "devDependencies": {
+        "eslint": "^10.13.0",
+        "prettier": "^3.8.1",
+        "typescript-eslint": "^8.71.0"
     },
     "allowScripts": {
         "better-sqlite3@12.11.1": true

@@ -1,0 +1,8 @@
+dist/
+.angular/
+out-tsc/
+coverage/
+package-lock.json
+
+# Prose; indentation and quotes do not apply.
+*.md

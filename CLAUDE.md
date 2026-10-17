@@ -9,25 +9,25 @@ An npm workspaces monorepo with two apps and no shared code (yet):
 - `apps/web` (workspace `web`): Angular 22 PWA. Its own `CLAUDE.md` covers architecture and conventions; read it before working there.
 - `apps/api` (workspace `api`): NestJS 12 REST API on SQLite. `apps/api/README.md` documents endpoints, auth and environment variables.
 
-There is no monorepo tool (no Nx, Turborepo); that is deliberate. Each app keeps its own CLI (`ng`, `nest`) and its own config files.
+There is no monorepo tool (no Nx, Turborepo); that is deliberate. Each app keeps its own CLI (`ng`, `nest`) and build config; linting and formatting are shared.
 
 ## Commands
 
-`npm install` runs at the root only; there is one `package-lock.json`, at the root. To add a dependency to an app, run `npm install <pkg> -w web` (or `-w api`) at the root, never `npm install` inside an app folder.
+`npm install` runs at the root only; there is one `package-lock.json`, at the root. To add a dependency to an app, run `npm install <pkg> -w web` (or `-w api`) at the root, never `npm install` inside an app folder. Repo-wide dev tools (ESLint, Prettier) are root `devDependencies`.
 
-Root shortcuts: `npm run dev:web`, `npm run dev:api`, `npm run build` (both apps), `npm run lint` (both apps), `npm test` (api only; the web app has no tests on purpose). Any app script runs from the root with `-w <workspace>`, or from inside the app folder.
+Root scripts: `npm run dev:web`, `npm run dev:api`, `npm run build` (both apps), `npm test` (api only; the web app has no tests on purpose), and the repo-wide `npm run lint` / `lint:fix` and `npm run format` / `format:check`. Any other app script runs from the root with `-w <workspace>`, or from inside the app folder.
 
-Verify a change with the scripts of the app it touches:
+Verify a change with `npm run lint` and `npm run format:check`, plus the build (and for the api, the tests) of the app it touches.
 
-- web: `npm run lint -w web`, `npm run format:check -w web`, `npm run build -w web`
-- api: `npm test`, `npm run build -w api`, and `npx @biomejs/biome check` in `apps/api` (the api's `lint`/`format`/`check` scripts write fixes)
+## Linting and formatting
 
-## Formatting differs per app
+One configuration for the whole repository, at the root:
 
-- web: ESLint + Prettier, 4 spaces, **single quotes** (`apps/web/.editorconfig`)
-- api: Biome, 4 spaces, **double quotes** (`apps/api/biome.json`)
+- Prettier (`.prettierrc.json`): 4-space indentation and **double quotes** everywhere; HTML templates use the `angular` parser. `.prettierignore` skips build output, the lockfile and Markdown.
+- ESLint (`eslint.config.mjs`): `typescript-eslint`'s recommended rules on every `.ts` file in both apps.
+- `.editorconfig` matches the Prettier settings for editors.
 
-Match the app you are editing; do not reformat one to the other's style.
+Commit formatting-only changes separately and add their hashes to `.git-blame-ignore-revs`.
 
 ## Things that span both apps
 

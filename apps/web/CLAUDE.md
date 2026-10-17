@@ -8,18 +8,18 @@ Leaf (`leaf-ng`, workspace `web`) is an Angular 22 PWA for tracking when housepl
 
 ## Commands
 
-Dependencies are installed once at the repository root (`npm install` there). Run these from `apps/web`, or from the root with `-w web` (e.g. `npm run lint -w web`):
+Dependencies are installed once at the repository root (`npm install` there). Run these from `apps/web`, or from the root with `-w web` (e.g. `npm run build -w web`):
 
 ```bash
 npm start              # ng serve, development config, http://localhost:4200
 npm run build          # production build to dist/leaf_ng (includes the service worker)
 npm run watch          # development build in watch mode
-npm run lint           # eslint src   (lint:fix to autofix)
-npm run format         # prettier --write on src  (format:check to verify)
 npm run deploy         # build + publish to GitHub Pages with --base-href=/leaf_ng/
 ```
 
-There is no test suite, on purpose: no spec files, no test runner installed, and no `test` target in `angular.json`. Verify changes with `npm run lint`, `npm run format:check`, and `npm run build`.
+Linting and formatting run from the repository root for the whole repository: `npm run lint` (`lint:fix` to autofix) and `npm run format` (`format:check` to verify).
+
+There is no test suite, on purpose: no spec files, no test runner installed, and no `test` target in `angular.json`. Verify changes with `npm run lint`, `npm run format:check` (both at the root), and `npm run build`.
 
 ## Backend and auth
 
@@ -61,6 +61,6 @@ The service worker (`ngsw-config.json`) is enabled only in production builds (`!
 
 ## Conventions
 
-- 4-space indentation everywhere, single quotes in TypeScript (`.editorconfig`; Prettier picks it up). HTML is formatted with Prettier's `angular` parser.
+- Formatting and linting are repository-wide (see the root `CLAUDE.md`): Prettier with 4-space indentation and double quotes; HTML uses Prettier's `angular` parser.
 - Naming: files and classes have no `.component`/`Component` suffix (`plants-overview.ts` exports `PlantsOverview`); services are `*-service.ts`, pipes `*-pipe.ts`.
 - Templates use the built-in control flow (`@if`, `@for`, `@let`), not structural directives.
