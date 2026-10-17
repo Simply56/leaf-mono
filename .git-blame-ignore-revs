@@ -1,0 +1,5 @@
+# Formatting-only commits, skipped by `git blame` (and by GitHub's blame view).
+# Locally: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Format the repository with Prettier
+84e569731faae0d4319c4ab271023686debdd262
