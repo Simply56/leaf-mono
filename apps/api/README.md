@@ -119,7 +119,7 @@ A plant looks like this:
 
 ### Create or update a plant
 
-`POST /plants` and `PATCH /plants/:id` accept the same JSON body. Unknown properties are rejected with `400 Bad Request`.
+`POST /plants` and `PATCH /plants/:id` accept the same JSON body. Unknown properties are rejected with `400 Bad Request`. Both bodies, and the plant every endpoint returns, are defined once as Zod schemas in `packages/shared`; the API validates requests with them and generates the Swagger document from them.
 
 ```json
 {
@@ -129,7 +129,7 @@ A plant looks like this:
 ```
 
 - `name`: string. Required when creating a plant.
-- `lastWatered`: ISO 8601 date. To record a watering, `PATCH` the plant with the new date.
+- `lastWatered`: ISO 8601 date (`2026-10-03`) or date-time (`2026-10-03T08:30:00Z`, `2026-10-03T10:30:00+02:00`), or `null` to clear it. To record a watering, `PATCH` the plant with the new date. Responses always give it as a UTC timestamp (`2026-10-03T08:30:00.000Z`), or `null`.
 - `imagePath` cannot be sent; only the image upload sets it.
 
 ### Upload a plant image

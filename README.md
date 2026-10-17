@@ -6,6 +6,7 @@ Leaf tracks when houseplants were last watered. This repository holds both halve
 | ---------- | --------- | ------------------------------------------------------------ |
 | `apps/web` | `web`     | Angular 22 PWA (formerly the `leaf-ng` repository)           |
 | `apps/api` | `api`     | NestJS REST API with SQLite (formerly the `leaf-nest` repository) |
+| `packages/shared` | `@leaf/shared` | The API contract as Zod schemas: the API validates requests with it, the web app validates responses |
 
 The history of both original repositories is preserved. Files were moved into `apps/` in one commit each, so use `git log --follow <file>` to see history from before the move.
 
@@ -26,7 +27,8 @@ Run from the repository root:
 | ------------------- | ------------------------------------------------ |
 | `npm run dev:web`   | Angular dev server on http://localhost:4200      |
 | `npm run dev:api`   | API in watch mode on http://localhost:3000       |
-| `npm run build`     | Build both apps (`build:web` / `build:api` for one) |
+| `npm run dev:shared` | Rebuild `@leaf/shared` whenever its source changes |
+| `npm run build`     | Build the shared package, then both apps (`build:shared` / `build:web` / `build:api` for one) |
 | `npm test`          | API test suite (the web app has no tests)        |
 | `npm run lint`      | ESLint over the whole repository (`lint:fix` to autofix) |
 | `npm run format`    | Prettier over the whole repository (`format:check` to verify) |

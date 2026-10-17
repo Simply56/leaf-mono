@@ -7,6 +7,11 @@ import {
 } from "@angular/core";
 import Plant from "../models/plantInfo.model";
 import { HttpClient, httpResource } from "@angular/common/http";
+import {
+    type CreatePlantRequest,
+    PlantListSchema,
+    type UpdatePlantRequest,
+} from "@leaf/shared";
 import { Observable } from "rxjs";
 import { environment } from "../environments/environments";
 import { AuthService } from "./auth-service";
@@ -23,14 +28,26 @@ export class PlantsService {
     private plantsResource = httpResource<Plant[]>(
         () => (this.keyResolved() ? this.buildUrl("/plants") : undefined),
         {
-            parse: (raw) =>
-                (raw as Plant[]).map((p) => {
-                    p.imagePath = environment.url + p.imagePath;
-                    if (p.lastWatered != undefined) {
-                        p.lastWatered = new Date(p.lastWatered);
-                    }
-                    return p;
-                }),
+            // A response that does not match the shared schema fails the load
+            // (and shows the error banner) instead of reaching the templates.
+            parse: (raw) => {
+                const result = PlantListSchema.safeParse(raw);
+                if (!result.success) {
+                    console.error(
+                        "GET /plants returned an unexpected body:",
+                        result.error.issues,
+                    );
+                    throw result.error;
+                }
+                return result.data.map((plant) => ({
+                    ...plant,
+                    imagePath: environment.url + plant.imagePath,
+                    lastWatered:
+                        plant.lastWatered === null
+                            ? null
+                            : new Date(plant.lastWatered),
+                }));
+            },
         },
     );
 
@@ -72,7 +89,9 @@ export class PlantsService {
     addPlant(name: string) {
         if (name === "") return;
         this.mutate(
-            this.http.post(this.buildUrl("/plants"), { name: name }),
+            this.http.post(this.buildUrl("/plants"), {
+                name: name,
+            } satisfies CreatePlantRequest),
             "Could not add the plant.",
         );
     }
@@ -81,7 +100,7 @@ export class PlantsService {
         this.mutate(
             this.http.patch(this.buildUrl(`/plants/${plantId}`), {
                 name: newName,
-            }),
+            } satisfies UpdatePlantRequest),
             "Could not rename the plant.",
         );
     }
@@ -90,7 +109,7 @@ export class PlantsService {
         this.mutate(
             this.http.patch(this.buildUrl(`/plants/${plantId}`), {
                 lastWatered: ISODate,
-            }),
+            } satisfies UpdatePlantRequest),
             "Could not log the watering.",
         );
     }
@@ -106,10 +125,7 @@ export class PlantsService {
         const formData = new FormData();
         formData.append("image", image);
         this.mutate(
-            this.http.post<Plant>(
-                this.buildUrl(`/plants/${plantId}/image`),
-                formData,
-            ),
+            this.http.post(this.buildUrl(`/plants/${plantId}/image`), formData),
             "Could not upload the image.",
         );
     }

@@ -25,7 +25,7 @@ There is no test suite, on purpose: no spec files, no test runner installed, and
 
 - `src/app/environments/environments.ts` holds a hardcoded `useVps` flag that picks the API base URL: the deployed VPS (`true`, the committed default) or the api from `apps/api` running locally at `http://127.0.0.1:3000` (`false`; start it with `npm run dev:api` at the root). There are no Angular `fileReplacements`; flip the flag by hand for local backend work and do not commit it flipped.
 - Every request carries the API key as an `?apiKey=` query parameter (`PlantsService.buildUrl`). `AuthService.getApiKey()` resolves it in order: in-memory → `localStorage['apiKey']` → `?apiKey=` in the page URL (then persisted) → a blocking `window.prompt`. The resolved key is written onto the mutable `environment.apiKey`.
-- `imagePath` from the API is server-relative; the `parse` step of the plants resource in `PlantsService` prefixes it with `environment.url` and converts `lastWatered` strings to `Date`.
+- The `parse` step of the plants resource in `PlantsService` first checks the response against `PlantListSchema` from `@leaf/shared` (the contract the API is tested against); a mismatch fails the load, which shows the error banner, and logs the schema's issues to the console. It then prefixes the server-relative `imagePath` with `environment.url` and converts `lastWatered` strings to `Date`. The app's `Plant` (`models/plantInfo.model.ts`) is derived from the shared type with those two changes; request bodies are typed with the shared `CreatePlantRequest` / `UpdatePlantRequest`.
 
 ## Architecture
 
