@@ -12,7 +12,12 @@
     [src]="plant.imagePath"
     [alt]="plant.name"
     class="plant-detail-image"
+    role="button"
+    tabindex="0"
+    [attr.aria-label]="'Change the image of ' + plant.name"
     (click)="imageInput.click()"
+    (keydown.enter)="imageInput.click()"
+    (keydown.space)="$event.preventDefault(); imageInput.click()"
     style="cursor: pointer"
     title="Click to change image"
 />

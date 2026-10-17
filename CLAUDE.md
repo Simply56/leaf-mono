@@ -27,7 +27,7 @@ Verify a change with `npm run lint` and `npm run format:check`, plus the build (
 One configuration for the whole repository, at the root:
 
 - Prettier (`.prettierrc.json`): 4-space indentation and **double quotes** everywhere; HTML templates use the `angular` parser. `.prettierignore` skips build output, the lockfile and Markdown.
-- ESLint (`eslint.config.mjs`): `typescript-eslint`'s recommended rules on every `.ts` file in both apps.
+- ESLint (`eslint.config.mjs`): `typescript-eslint`'s recommended rules on every `.ts` file in both apps, plus `angular-eslint` for the web app: its TypeScript rules, and the recommended and accessibility rules for templates (`== null` / `!= null` are allowed on purpose, to cover `undefined` too).
 - `.editorconfig` matches the Prettier settings for editors.
 
 ## Shared contract (`packages/shared`)
