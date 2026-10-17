@@ -29,7 +29,6 @@ import { PlantImage } from "../plant-image/plant-image";
     templateUrl: "./plant-details.html",
 })
 export class PlantDetails {
-    fullUrl = window.location.href;
     router: Router = inject(Router);
     service: PlantsService = inject(PlantsService);
     route: ActivatedRoute = inject(ActivatedRoute);

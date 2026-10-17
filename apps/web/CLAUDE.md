@@ -14,7 +14,7 @@ Dependencies are installed once at the repository root (`npm install` there). Ru
 npm start              # ng serve, development config, http://localhost:4200
 npm run build          # production build to dist/leaf_ng (includes the service worker)
 npm run watch          # development build in watch mode
-npm run deploy         # build + publish to GitHub Pages with --base-href=/leaf_ng/
+npm run deploy         # build + publish to GitHub Pages with --base-href=/leaf-mono/
 ```
 
 Linting and formatting run from the repository root for the whole repository: `npm run lint` (`lint:fix` to autofix) and `npm run format` (`format:check` to verify).
@@ -41,7 +41,7 @@ Components use the Angular 22 default change detection strategy, `OnPush` (none 
 - `plants` and `error` are `linkedSignal`s over the resource: `plants` keeps the last loaded list while reloading and after a failed reload; `error` follows the load status but is also set by failed mutations and cleared by the user.
 - `error` is rendered as a dismissible banner in the root `App` template, so components do not handle request errors themselves.
 
-Routes (`app.routes.ts`): `''` → `PlantsOverview`, `plant/:id` → `PlantDetails`. `PlantDetails` does not fetch; it derives its plant with a `computed` over `service.plants()` and redirects home via an `effect` once loading finishes without a match. The detail page URL is what users encode into a QR code for the pot, so the `plant/:id` URL shape (and the `?apiKey=` bootstrap) must stay stable.
+Routes (`app.routes.ts`): `''` → `PlantsOverview`, `plant/:id` → `PlantDetails`. `PlantDetails` does not fetch; it derives its plant with a `computed` over `service.plants()` and redirects home via an `effect` once loading finishes without a match.
 
 The "days since watered" display is two chained pipes: `computeWateredDaysAgo` (Date → whole days) then `valueToColor` (days → green-to-red `hsl()` over a 10-day scale, using the `--status-lightness` CSS variable so it works in both themes).
 
@@ -55,9 +55,9 @@ The "days since watered" display is two chained pipes: `computeWateredDaysAgo` (
 
 `InstallService` listens for the Chromium-only `beforeinstallprompt` event, and the root `App` template shows an install banner while one is pending and the user has not dismissed it (`localStorage['installDismissed']`). iOS never fires the event in any browser, so there the same banner shows the manual steps instead (Share → "Add to Home Screen") unless the app is already running standalone. Other browsers that never fire it (desktop Safari, Firefox) simply show no banner.
 
-The service worker (`ngsw-config.json`) is enabled only in production builds (`!isDevMode()`), so caching behavior cannot be reproduced under `npm start`. The app is served from the `/leaf_ng/` sub-path on GitHub Pages, so asset and manifest paths must stay relative (no leading `/`).
+The service worker (`ngsw-config.json`) is enabled only in production builds (`!isDevMode()`), so caching behavior cannot be reproduced under `npm start`. The app is served from the `/leaf-mono/` sub-path on GitHub Pages, so asset and manifest paths must stay relative (no leading `/`).
 
-`npm run deploy` publishes to the `gh-pages` branch of `Simply56/leaf_ng` through an explicit `--repo`, not to this repository's own remote. Keep it that way: deploying from another repository moves the site to a different URL and breaks every QR code already printed for a pot.
+`npm run deploy` publishes to the `gh-pages` branch of this repository (`Simply56/leaf-mono`), served at `https://simply56.github.io/leaf-mono/`.
 
 ## Conventions
 

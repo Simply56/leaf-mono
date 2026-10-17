@@ -51,5 +51,5 @@ The package is an ES module (`"type": "module"`); the CommonJS api, its Jest tes
 
 Nothing in this repository deploys on its own, and nothing should be deployed without being asked.
 
-- web: `npm run deploy -w web` publishes to the `gh-pages` branch of `Simply56/leaf_ng` (explicit `--repo`); the URL must not change because plant URLs are printed as QR codes.
+- web: `npm run deploy -w web` publishes to the `gh-pages` branch of this repository, served at `https://simply56.github.io/leaf-mono/`.
 - api: the production instance on the VPS still runs from a clone of the old `leaf-nest` repository, started and stopped by hand. The Docker image builds from the repository root (`apps/api/compose.yaml` sets the context).

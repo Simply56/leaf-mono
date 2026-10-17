@@ -197,22 +197,6 @@ button:hover {
     background-color: var(--primary-hover);
 }
 
-.qr-info {
-    background: var(--card-background);
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px 0;
-    box-shadow: 0 2px 4px var(--shadow);
-}
-
-.qr-url {
-    word-break: break-all;
-    background: var(--muted-background);
-    padding: 10px;
-    border-radius: 4px;
-    font-family: monospace;
-}
-
 @media (min-width: 600px) {
     .plants-list {
         grid-template-columns: repeat(2, 1fr);
@@ -245,57 +229,6 @@ button:hover {
     background-color: #c82333;
 }
 
-.qr-download {
-    text-align: center;
-    margin: 20px 0;
-}
-
-.qr-button {
-    background-color: #2196f3;
-    font-size: 18px;
-    padding: 12px 24px;
-}
-
-.qr-button:hover {
-    background-color: #1976d2;
-}
-
-.qr-codes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(150px, 30vw), 1fr));
-    gap: var(--spacing-unit);
-    padding: var(--spacing-unit);
-}
-
-.qr-code-container {
-    text-align: center;
-    padding: 10px;
-}
-
-.qr-code {
-    display: inline-block;
-    margin: 5px 0;
-    padding: 5px;
-}
-
-.qr-row {
-    display: flex;
-    line-height: 1;
-}
-
-.qr-cell {
-    width: 5px;
-    height: 5px;
-}
-
-.qr-cell.black {
-    background-color: black;
-}
-
-.qr-cell.white {
-    background-color: white;
-}
-
 .spinner-overlay {
     position: fixed; /* stays in place even when scrolling */
     top: 0;
@@ -324,62 +257,5 @@ button:hover {
     }
     100% {
         transform: rotate(360deg);
-    }
-}
-
-@media print {
-    body {
-        background: white;
-        color: #333;
-        margin: 0;
-        padding: 0;
-    }
-
-    .qr-codes-grid {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 15px;
-        padding: 15px;
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-    }
-
-    .qr-code-container {
-        break-inside: avoid;
-        page-break-inside: avoid;
-        background: none;
-        box-shadow: none;
-        width: 100%;
-        max-width: 100%;
-        padding: 5px;
-    }
-
-    .qr-code {
-        border: 1px solid black;
-        background: white;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        transform: scale(0.8);
-        transform-origin: center;
-        margin: 2px 0;
-        padding: 2px;
-    }
-
-    .qr-cell {
-        width: 4px;
-        height: 4px;
-    }
-
-    .qr-cell.black {
-        background-color: black !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-
-    .qr-cell.white {
-        background-color: white !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
     }
 }
