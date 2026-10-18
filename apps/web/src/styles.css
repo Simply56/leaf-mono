@@ -404,14 +404,10 @@ a {
 }
 
 .plant-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 0.875rem;
     list-style: none;
-    overflow: hidden;
-    border-radius: var(--radius-l);
-    background: var(--surface);
-}
-
-.plant-list li + li {
-    border-top: 1px solid var(--border);
 }
 
 .tone-ok {
@@ -426,89 +422,93 @@ a {
     --tone: var(--tone-due);
 }
 
-.plant-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding-right: 0.75rem;
+.plant-card {
+    position: relative;
 }
 
-.plant-row-link {
+.plant-card-link {
     display: flex;
-    flex: 1;
-    align-items: center;
-    gap: 0.875rem;
-    min-width: 0;
-    padding: 0.75rem 0 0.75rem var(--gutter);
+    flex-direction: column;
+    gap: 0.125rem;
     text-decoration: none;
 }
 
-.plant-row-link:focus-visible {
-    outline-offset: -3px;
+.plant-card-link:focus-visible {
+    outline-offset: 3px;
+    border-radius: var(--radius-l);
 }
 
-.plant-row-text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-.plant-row-name {
+.plant-card-photo {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    margin-bottom: 0.375rem;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    border-radius: var(--radius-l);
+    background: var(--surface-sunken);
+}
+
+.plant-card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* The bar along the photo's foot empties as the next watering comes due */
+.level-bar {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 0.375rem;
+    background: linear-gradient(
+        to right,
+        var(--tone) calc(var(--level, 0) * 100%),
+        var(--ring-track) 0
+    );
+}
+
+.plant-card-name {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    padding-inline: 0.25rem;
     font-size: 1.0625rem;
     font-weight: 650;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
 }
 
 .status-text {
+    padding-inline: 0.25rem;
     color: var(--tone);
     font-size: 0.9375rem;
     font-weight: 550;
 }
 
-/* The ring around a plant's photo empties as the next watering comes due */
-.water-ring {
-    flex: none;
-    width: 3.5rem;
-    height: 3.5rem;
-    padding: 3px;
-    border-radius: 50%;
-    background: conic-gradient(
-        var(--tone) calc(var(--level, 0) * 360deg),
-        var(--ring-track) 0
-    );
-}
-
-.water-ring img {
-    width: 100%;
-    height: 100%;
-    border: 2px solid var(--surface);
-    border-radius: 50%;
-    object-fit: cover;
-    background: var(--surface-sunken);
-}
-
-.water-chip {
-    display: inline-flex;
-    flex: none;
-    align-items: center;
-    gap: 0.25rem;
-    min-height: 2.75rem;
-    padding: 0 0.875rem 0 0.625rem;
-    border-radius: 999px;
-    background: var(--water-soft);
-    color: var(--water);
-    font-weight: 650;
-}
-
+/* Over the photo, so the button needs its own opaque backing */
+.water-chip,
 .watered-mark {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
     display: inline-flex;
-    flex: none;
     align-items: center;
     justify-content: center;
     width: 2.75rem;
     height: 2.75rem;
+    border-radius: 50%;
+    box-shadow: var(--shadow-raised);
+}
+
+.water-chip {
+    background: var(--water-soft);
+    color: var(--water);
+}
+
+.watered-mark {
+    background: var(--surface);
     color: var(--tone-ok);
 }
 

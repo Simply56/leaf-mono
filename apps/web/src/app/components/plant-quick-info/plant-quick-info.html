@@ -1,12 +1,15 @@
-<div class="plant-row" [class]="'tone-' + status.tone">
-    <a class="plant-row-link" [routerLink]="['plant', plant.id]">
-        <span class="water-ring" [style.--level]="status.level">
+<div class="plant-card" [class]="'tone-' + status.tone">
+    <a class="plant-card-link" [routerLink]="['plant', plant.id]">
+        <span class="plant-card-photo">
             <img [src]="plant.imagePath" alt="" loading="lazy" />
+            <span
+                class="level-bar"
+                [style.--level]="status.level"
+                aria-hidden="true"
+            ></span>
         </span>
-        <span class="plant-row-text">
-            <span class="plant-row-name">{{ plant.name }}</span>
-            <span class="status-text">{{ status.label }}</span>
-        </span>
+        <span class="plant-card-name">{{ plant.name }}</span>
+        <span class="status-text">{{ status.label }}</span>
     </a>
     @if (status.daysSince === 0) {
         <span class="watered-mark" title="Watered today">
@@ -20,7 +23,7 @@
             (click)="water()"
             [attr.aria-label]="'Water ' + plant.name"
         >
-            <app-icon name="droplet" /> Water
+            <app-icon name="droplet" />
         </button>
     }
 </div>

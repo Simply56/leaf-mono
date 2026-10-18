@@ -5,7 +5,7 @@ import type { WateringStatus } from "../../models/watering-status";
 import { PlantsService } from "../../services/plants-service";
 import { Icon } from "../icon/icon";
 
-/** One row of the home list: tap the row to open the plant, tap Water to log a watering now. */
+/** One photo card of the home grid: tap the photo or name to open the plant, tap the droplet to log a watering now. */
 @Component({
     selector: "app-plant-quick-info",
     imports: [Icon, RouterLink],
