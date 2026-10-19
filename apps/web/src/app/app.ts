@@ -5,6 +5,7 @@ import { Icon } from "./components/icon/icon";
 import { AuthService } from "./services/auth-service";
 import { PlantsService } from "./services/plants-service";
 import { ToastService } from "./services/toast-service";
+import { UpdateService } from "./services/update-service";
 
 @Component({
     selector: "app-root",
@@ -16,4 +17,5 @@ export class App {
     protected auth = inject(AuthService);
     protected plants = inject(PlantsService);
     protected toasts = inject(ToastService);
+    protected update = inject(UpdateService);
 }
