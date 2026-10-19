@@ -19,6 +19,21 @@
 }
 
 <div class="toast-region" role="status" aria-live="polite">
+    @if (update.available()) {
+        <div class="toast">
+            <span>A new version of Leaf is available</span>
+            <button class="toast-action" (click)="update.reload()">
+                Reload
+            </button>
+            <button
+                class="icon-button toast-dismiss"
+                (click)="update.dismiss()"
+                aria-label="Dismiss update"
+            >
+                <app-icon name="close" />
+            </button>
+        </div>
+    }
     @if (toasts.toast(); as toast) {
         <div class="toast">
             <span>{{ toast.message }}</span>
